@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hexlet/chat-server": "^1.1.9",
-    "frontend": "file:frontend"
+    "@hexlet/chat-server": "^1.1.9"
   }
 }

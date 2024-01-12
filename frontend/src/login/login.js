@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useFormik } from 'formik';
+import loginImage from './loginImage.jpeg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
@@ -26,12 +27,12 @@ const LoginPage = () => {
             </div>
           </nav>
           <div className="container-fluid h-100">
-            <div className="row justify-content-center align-content-center h-100">
+            <div className="row align-content-center justify-content-center  h-100">
               <div className="col-12 col-md-8 col-xxl-6">
                 <div className="card shadow-sm">
                   <div className="card-body row p-5">
                     <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                      <img src="" className="rounded-circle" alt="Войти" />
+                      <img src={loginImage} className="rounded-circle" alt="Войти" />
                     </div>
                     <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
                       <h1 className="text-center mb-4">Войти</h1>
@@ -68,7 +69,7 @@ const LoginPage = () => {
                   </div>
                   <div className="card-footer p-4">
                     <div className="text-center">
-                      <span>Нет аккаунта?</span>
+                      <span>Нет аккаунта?   </span>
                       <a href="/signup">Регистрация</a>
                     </div>
                   </div>

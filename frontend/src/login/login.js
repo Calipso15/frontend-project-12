@@ -1,20 +1,38 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import loginImage from './loginImage.jpeg';
+import axios from 'axios';
+import hexletLogo from './loginImage.jpeg';
+import { useAuth } from '../auth/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
+  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post('/api/v1/login', values);
+        const { token } = response.data;
+        login(token);
+      } catch (error) {
+        setErrorMessage('Неверные имя пользователя или пароль');
+      }
     },
   });
+
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    if (usernameInputRef.current) {
+      usernameInputRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="h-100">
@@ -32,7 +50,7 @@ const LoginPage = () => {
                 <div className="card shadow-sm">
                   <div className="card-body row p-5">
                     <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                      <img src={loginImage} className="rounded-circle" alt="Войти" />
+                      <img src={hexletLogo} className="rounded-circle" alt="Войти" />
                     </div>
                     <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
                       <h1 className="text-center mb-4">Войти</h1>
@@ -43,9 +61,10 @@ const LoginPage = () => {
                           required=""
                           placeholder="Ваш ник"
                           id="username"
-                          className="form-control"
+                          className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
                           onChange={formik.handleChange}
                           value={formik.values.username}
+                          ref={usernameInputRef}
                         />
                         <label htmlFor="username">Ваш ник</label>
 
@@ -58,11 +77,16 @@ const LoginPage = () => {
                           placeholder="Пароль"
                           type="password"
                           id="password"
-                          className="form-control"
+                          className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
                           onChange={formik.handleChange}
                           value={formik.values.password}
                         />
                         <label className="form-label" htmlFor="password">Пароль</label>
+                        {errorMessage && (
+                        <div className="invalid-tooltip d-block">
+                          {errorMessage}
+                        </div>
+                        )}
                       </div>
                       <button type="submit" className="w-100 mb-3 btn btn-outline-primary">Войти</button>
                     </form>

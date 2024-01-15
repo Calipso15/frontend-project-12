@@ -12,3 +12,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+body .invalid-tooltip {
+  --bs-border-radius: 0.25rem;
+  background-color: rgba(220, 53, 69, 0.9);
+}
+
+.form-control {
+  --bs-border-radius: 0.25rem;
+}
+
+.btn {
+  --bs-border-radius: 0.25rem;
+}

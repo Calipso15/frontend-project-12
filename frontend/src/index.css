@@ -25,3 +25,38 @@ body .invalid-tooltip {
 .btn {
   --bs-border-radius: 0.25rem;
 }
+
+.btn.btn-group-vertical {
+  border: none; 
+}
+
+.rounded-2 {
+  --bs-border-radius: 0.25rem!important
+}
+
+.dropdown-menu {
+  inset: 0px 0px auto auto; 
+  transform: translate(0px, 40px);
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 0.25rem;
+  color: #212529;
+  display: none;
+  font-size: 1rem;
+  list-style: none;
+  margin: 0;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  position: absolute;
+  text-align: left;
+  z-index: 1000;
+}
+
+.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25)
+}
+
+.dropdown-toggle.btn-secondary:focus {
+  box-shadow: 0 0 0 0.25rem hsla(208,6%,54%,.5)
+}

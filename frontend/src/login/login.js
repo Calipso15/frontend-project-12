@@ -3,12 +3,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../auth/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const formik = useFormik({
     initialValues: {
@@ -17,9 +19,11 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('/api/v1/login', values);
-        const { token } = response.data;
-        login(token);
+        const response = await axios.post('/api/v1/login', values); // values {username: 'admin', password: 'admin'}
+        const { token, username } = response.data;
+
+        login(token, username);
+        navigate('/channels');
       } catch (error) {
         setErrorMessage('Неверные имя пользователя или пароль');
       }
@@ -41,7 +45,6 @@ const LoginPage = () => {
           <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
             <div className="container">
               <a className="navbar-brand" href="/">Hexlet Chat</a>
-              <button type="button" className="btn btn-primary">Выйти</button>
             </div>
           </nav>
           <div className="container-fluid h-100">

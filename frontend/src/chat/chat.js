@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import { io } from 'socket.io-client';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { updateNewChannelName, resetNewChannelName } from '../redux/reducers/newChannelSlice';
-import { setMessages, addMessage } from '../redux/reducers/messagesSlice';
+import { addMessage } from '../redux/reducers/messagesSlice';
 import { openModal, closeModal } from '../redux/reducers/modalSlice';
 import {
   setChannels, addChannel, deleteChannel, renameChannel, selectChannel,
@@ -26,18 +27,30 @@ const ChatPage = () => {
   const newChannelName = useSelector((state) => state.newChannel.name);
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
   const [openDropdowns, setDropdownOpen] = useState({});
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => { // получение данных с сервера
+    const newSocket = io('/');
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('newMessage', (message) => {
+      dispatch(addMessage(message));
+    });
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    const fetchData = async () => { // получение данных с сервера по каналам
       try {
         const responseChannels = await axios.get('/api/v1/channels', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const responseMessages = await axios.get('/api/v1/messages', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+
         dispatch(setChannels(responseChannels.data));
-        dispatch(setMessages(responseMessages.data));
         if (responseChannels.data.length > 0) {
           dispatch(selectChannel(responseChannels.data[0].id));
         }
@@ -57,12 +70,11 @@ const ChatPage = () => {
     e.preventDefault();
     try {
       const newMessage = { body: formData.message, channelId: selectedChannelId, username };
-      const responseMessage = await axios.post('/api/v1/messages', newMessage, {
+      await axios.post('/api/v1/messages', newMessage, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      dispatch(addMessage(responseMessage.data));
       dispatch(resetMessage());
     } catch (error) {
       console.error('Ошибка при отправке сообщения:', error);
@@ -155,7 +167,6 @@ const ChatPage = () => {
   const toggleDropdown = (channelId) => {
     setDropdownOpen((prev) => ({ ...prev, [channelId]: !prev[channelId] }));
   };
-
 
   return (
     <div className="h-100">

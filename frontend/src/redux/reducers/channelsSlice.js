@@ -18,8 +18,8 @@ export const channelsSlice = createSlice({
       state.channels = state.channels.filter((channel) => channel.id !== action.payload);
     },
     renameChannel: (state, action) => {
-      state.channels = state.channels.map((ch) => (ch.id === action.payload.id ?
-        { ...ch, name: action.payload.name } : ch));
+      state.channels = state.channels.map((ch) => (ch.id === action.payload.id
+        ? { ...ch, name: action.payload.name } : ch));
     },
     selectChannel: (state, action) => {
       state.selectedChannelId = action.payload;

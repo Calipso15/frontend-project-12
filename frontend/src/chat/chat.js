@@ -2,12 +2,16 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
+import {
+  Formik, Form, Field, ErrorMessage,
+} from 'formik';
+import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
-import { updateNewChannelName, resetNewChannelName } from '../redux/reducers/newChannelSlice';
+import { resetNewChannelName } from '../redux/reducers/newChannelSlice';
 import { addMessage } from '../redux/reducers/messagesSlice';
 import { openModal, closeModal } from '../redux/reducers/modalSlice';
 import {
@@ -24,10 +28,18 @@ const ChatPage = () => {
   const channels = useSelector((state) => state.channels.channels);
   const messages = useSelector((state) => state.messages.messages);
   const selectedChannelId = useSelector((state) => state.channels.selectedChannelId);
-  const newChannelName = useSelector((state) => state.newChannel.name);
-  const isModalOpen = useSelector((state) => state.modal.isModalOpen);
   const [openDropdowns, setDropdownOpen] = useState({});
   const [socket, setSocket] = useState(null);
+  const { isModalOpen, modalType } = useSelector((state) => state.modal);
+  const [selectedChannelForAction, setSelectedChannelForAction] = useState(null);
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, 'От 3 до 20 символов')
+      .max(20, 'От 3 до 20 символов')
+      .required('Обязательное поле')
+      .test('is-unique', 'Должно быть уникальным', async (value) => !channels.some((channel) => channel.name === value)),
+  });
 
   useEffect(() => {
     const newSocket = io('/');
@@ -101,32 +113,23 @@ const ChatPage = () => {
     ));
   };
 
-  const handleNewChannelNameChange = (e) => { // добавление нового канала
-    dispatch(updateNewChannelName(e.target.value));
-  };
-
-  const handleOpenModal = () => { // открытие окна на добавление канала
-    dispatch(openModal());
-    document.body.classList.add('modal-open');
-    document.body.style.overflow = 'hidden';
-  };
-
   const handleCloseModal = () => { // закрытие окна после добавления канала
     dispatch(closeModal());
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
   };
 
-  const handleSubmitModal = async (e) => { // добавление нового канала
-    e.preventDefault();
+  const handleSubmitModal = async (values) => { // добавление нового канала
     try {
-      const newChannel = { name: newChannelName };
+      const newChannel = { name: values.name, user: username };
       axios.post('/api/v1/channels', newChannel, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }).then((response) => {
         dispatch(addChannel(response.data));
+        dispatch(selectChannel(response.data.id));
+
         dispatch(resetNewChannelName());
         handleCloseModal();
       });
@@ -135,18 +138,28 @@ const ChatPage = () => {
     }
   };
 
-  const handleDeleteChannel = async (channelId) => { // удаление канала
+  const generalChannel = channels.find((channel) => channel.name === 'general');
+
+  const handleDeleteChannel = async () => { // удаление канала
+    const channelId = selectedChannelForAction;
     try {
+      await axios.delete(`/api/v1/messages/${channelId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       await axios.delete(`/api/v1/channels/${channelId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(deleteChannel(channelId));
+      dispatch(selectChannel(generalChannel.id));
+      handleCloseModal();
     } catch (error) {
       console.error('Error deleting channel:', error);
     }
   };
 
-  const handleRenameChannel = async (channelId, newName) => { // переименование канала
+  const handleRenameChannel = async (newName) => { // переименование канала
+    const channelId = selectedChannelForAction;
+
     try {
       await axios.patch(`/api/v1/channels/${channelId}`, {
         name: newName,
@@ -154,12 +167,35 @@ const ChatPage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(renameChannel({ id: channelId, name: newName }));
+      dispatch(selectChannel(channelId));
+      handleCloseModal();
     } catch (error) {
       console.error('Error renaming channel:', error);
     }
   };
 
-  const getChannelNameById = (channelId) => { // поиск названия выбранного канала
+  const handleOpenModal = (type) => { // открытие окна на добавление канала
+    dispatch(openModal(type));
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+    setDropdownOpen({});
+  };
+
+  const handleDeleteChannelButtonClick = (channelId) => {
+    setSelectedChannelForAction(channelId);
+    handleOpenModal('delete', channelId);
+  };
+
+  const handleAddChannelButtonClick = () => {
+    handleOpenModal('add');
+  };
+
+  const handleRenameChannelButtonClick = (channelId) => {
+    setSelectedChannelForAction(channelId);
+    handleOpenModal('rename', channelId);
+  };
+
+  const getChannelNameById = (channelId) => { // поиск названия выбранного канала по айди
     const channel = channels.find((ch) => ch.id === channelId);
     return channel ? channel.name : 'Неизвестный канал';
   };
@@ -183,7 +219,7 @@ const ChatPage = () => {
               <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
                 <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
                   <b>Каналы</b>
-                  <button type="button" className="p-0 text-primary btn btn-group-vertical" onClick={handleOpenModal}>
+                  <button type="button" className="p-0 text-primary btn btn-group-vertical" onClick={handleAddChannelButtonClick}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                       <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                       <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -215,8 +251,8 @@ const ChatPage = () => {
 
                           </button>
                           <ul className={`dropdown-menu ${openDropdowns[channel.id] ? 'show' : ''}`}>
-                            <li><a className="dropdown-item" onClick={() => handleDeleteChannel(channel.id)} href="#">Удалить</a></li>
-                            <li><a className="dropdown-item" onClick={() => handleRenameChannel(channel.id)} href="#">Переименовать</a></li>
+                            <li><a className="dropdown-item" onClick={() => handleDeleteChannelButtonClick(channel.id)} href="#">Удалить</a></li>
+                            <li><a className="dropdown-item" onClick={() => handleRenameChannelButtonClick(channel.id)} href="#">Переименовать</a></li>
                           </ul>
                         </>
                         )}
@@ -224,7 +260,6 @@ const ChatPage = () => {
                     </li>
                   ))}
                 </ul>
-
               </div>
               <div className="col p-0 h-100">
                 <div className="d-flex flex-column h-100">
@@ -271,7 +306,7 @@ const ChatPage = () => {
               </div>
             </div>
           </div>
-          {isModalOpen && (
+          {isModalOpen && modalType === 'add' && (
           <div role="dialog" aria-modal="true" className="fade modal show" tabIndex="-1" style={{ display: 'block' }}>
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content">
@@ -280,25 +315,89 @@ const ChatPage = () => {
                   <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
                 </div>
                 <div className="modal-body">
-                  <form onSubmit={handleSubmitModal}>
-                    <div>
-                      <input
-                        name="name"
-                        id="name"
-                        className="mb-2 form-control"
-                        value={newChannelName}
-                        onChange={handleNewChannelNameChange}
-                      />
-                      <label className="visually-hidden" htmlFor="name">
-                        Имя канала
-                      </label>
-                      <div className="invalid-feedback" />
-                      <div className="d-flex justify-content-end">
-                        <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
-                        <button type="submit" className="btn btn-primary">Отправить</button>
-                      </div>
-                    </div>
-                  </form>
+                  <Formik
+                    initialValues={{ name: '' }}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { resetForm }) => {
+                      handleSubmitModal(values);
+                      resetForm();
+                    }}
+                    validateOnChange={false}
+                  >
+                    {({
+                      isSubmitting, dirty, errors, touched,
+                    }) => (
+                      <Form>
+                        <div>
+                          <Field type="text" name="name" id="name" className={`mb-2 form-control ${touched.name && errors.name ? 'is-invalid' : ''}`} />
+                          <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
+                        </div>
+                        <div className="d-flex justify-content-end">
+                          <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
+                          <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>Отправить</button>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            </div>
+          </div>
+          )}
+          {isModalOpen && modalType === 'delete' && (
+          <div role="dialog" aria-modal="true" className="fade modal show" tabIndex="-1" style={{ display: 'block' }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <div className="modal-title h4">Удалить канал</div>
+                  <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
+                </div>
+                <div className="modal-body">
+                  <p className="lead">Вы уверены?</p>
+                  <div className="d-flex justify-content-end">
+                    <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
+                    <button type="button" className="btn btn-danger" onClick={() => handleDeleteChannel()}>Удалить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          )}
+          {isModalOpen && modalType === 'rename' && (
+          <div role="dialog" aria-modal="true" className="fade modal show" tabIndex="-1" style={{ display: 'block' }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <div className="modal-title h4">Переименовать канал</div>
+                  <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
+
+                </div>
+                <div className="modal-body">
+                  <Formik
+                    initialValues={{ name: getChannelNameById(selectedChannelForAction) }}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, { resetForm }) => {
+                      handleRenameChannel(values.name);
+                      resetForm();
+                    }}
+                    validateOnChange={false}
+                  >
+                    {({
+                      isSubmitting, dirty, errors, touched,
+                    }) => (
+                      <Form>
+                        <div>
+                          <Field type="text" name="name" id="name" className={`mb-2 form-control ${touched.name && errors.name ? 'is-invalid' : ''}`} />
+                          <label className="visually-hidden" htmlFor="name">Имя канала</label>
+                          <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
+                          <div className="d-flex justify-content-end">
+                            <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
+                            <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>Отправить</button>
+                          </div>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </div>
             </div>

@@ -5,13 +5,10 @@ export const newChannelSlice = createSlice({
   name: 'newChannel',
   initialState: { name: '' },
   reducers: {
-    updateNewChannelName: (state, action) => {
-      state.name = action.payload;
-    },
     resetNewChannelName: () => ({ name: '' }),
   },
 });
 
-export const { updateNewChannelName, resetNewChannelName } = newChannelSlice.actions;
+export const { resetNewChannelName } = newChannelSlice.actions;
 
 export default newChannelSlice.reducer;

@@ -4,6 +4,7 @@ import messagesReducer from './reducers/messagesSlice';
 import newChannelReducer from './reducers/newChannelSlice';
 import modalReducer from './reducers/modalSlice';
 import formDataReducer from './reducers/formDataSlice';
+import selectedChannelReducer from './reducers/selectedChannelSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     newChannel: newChannelReducer,
     modal: modalReducer,
     formData: formDataReducer,
+    selectedChannel: selectedChannelReducer,
   },
 });
 

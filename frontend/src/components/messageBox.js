@@ -4,6 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import leoProfanity from 'leo-profanity';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
@@ -25,7 +26,8 @@ const MessageBox = () => {
   const handleSubmit = async (e) => { // отправка сообщений на сервер
     e.preventDefault();
     try {
-      const newMessage = { body: formData.message, channelId: selectedChannelId, username };
+      const filteredMessage = leoProfanity.clean(formData.message);
+      const newMessage = { body: filteredMessage, channelId: selectedChannelId, username };
       await axios.post('/api/v1/messages', newMessage, {
         headers: {
           Authorization: `Bearer ${token}`,

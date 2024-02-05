@@ -5,6 +5,7 @@ import {
 import * as Yup from 'yup';
 import axios from 'axios';
 import React from 'react';
+import leoProfanity from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -36,16 +37,18 @@ const ModalAdd = () => {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
   };
+
   const handleRenameChannel = async (newName) => { // переименование канала
     const channelId = selectChannelMenu;
-
     try {
+      const cleanName = leoProfanity.clean(newName);
+
       await axios.patch(`/api/v1/channels/${channelId}`, {
-        name: newName,
+        name: cleanName,
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      dispatch(renameChannel({ id: channelId, name: newName }));
+      dispatch(renameChannel({ id: channelId, name: cleanName }));
       toast.success(t('ru.notify.notifyChangeChannel'));
 
       dispatch(selectChannel(channelId));
@@ -81,7 +84,9 @@ const ModalAdd = () => {
 
   const handleSubmitModal = async (values) => { // добавление нового канала
     try {
-      const newChannel = { name: values.name, user: username };
+      const cleanedName = leoProfanity.clean(values.name);
+
+      const newChannel = { name: cleanedName, user: username };
       axios.post('/api/v1/channels', newChannel, {
         headers: {
           Authorization: `Bearer ${token}`,

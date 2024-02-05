@@ -3,12 +3,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MessageBox = () => {
+  const { t } = useTranslation();
   const { token, username } = useAuth();
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.formData);
@@ -31,7 +33,7 @@ const MessageBox = () => {
       });
       dispatch(resetMessage());
     } catch (error) {
-      console.error('Ошибка при отправке сообщения:', error);
+      console.error(t('ru.notify.notifyServerError'), error);
     }
   };
 
@@ -48,8 +50,9 @@ const MessageBox = () => {
 
   const getChannelNameById = (channelId) => { // поиск названия выбранного канала по айди
     const channel = channels.find((ch) => ch.id === channelId);
-    return channel ? channel.name : 'Неизвестный канал';
+    return channel ? channel.name : '';
   };
+  const messagesLength = messages.filter((message) => message.channelId === selectedChannelId);
 
   return (
     <div className="d-flex flex-column h-100">
@@ -62,9 +65,7 @@ const MessageBox = () => {
           </b>
         </p>
         <span className="text-muted">
-          {messages.filter((message) => message.channelId === selectedChannelId).length}
-          {' '}
-          сообщений
+          {t('ru.chat.counter.count', { count: messagesLength.length })}
         </span>
       </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5">
@@ -87,7 +88,7 @@ const MessageBox = () => {
                 )}
                 {' '}
               </svg>
-              <span className="visually-hidden">Отправить</span>
+              <span className="visually-hidden">{t('ru.chat.addBtn')}</span>
             </button>
           </div>
         </form>

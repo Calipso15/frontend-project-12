@@ -5,6 +5,7 @@ import {
 import * as Yup from 'yup';
 import axios from 'axios';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../auth/AuthContext';
 import {
@@ -14,6 +15,7 @@ import { resetNewChannelName } from '../redux/reducers/newChannelSlice';
 import { closeModal } from '../redux/reducers/modalSlice';
 
 const ModalAdd = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { token, username } = useAuth();
   const channels = useSelector((state) => state.channels.channels);
@@ -22,10 +24,10 @@ const ModalAdd = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .required('Обязательное поле')
-      .test('is-unique', 'Должно быть уникальным', async (value) => !channels.some((channel) => channel.name === value)),
+      .min(3, (t('ru.errorsTexts.errorValidateMax20Min3')))
+      .max(20, (t('ru.errorsTexts.errorValidateMax20Min3')))
+      .required((t('ru.errorsTexts.errorValidateRequiredField')))
+      .test('is-unique', (t('ru.errorsTexts.errorValidateUniquePasswords')), async (value) => !channels.some((channel) => channel.name === value)),
   });
 
   const handleCloseModal = () => { // закрытие окна после добавления канала
@@ -46,7 +48,7 @@ const ModalAdd = () => {
       dispatch(selectChannel(channelId));
       handleCloseModal();
     } catch (error) {
-      console.error('Error renaming channel:', error);
+      console.error(t('ru.notify.notifyServerError'), error);
     }
   };
   const generalChannel = channels.find((channel) => channel.name === 'general');
@@ -64,13 +66,13 @@ const ModalAdd = () => {
       dispatch(selectChannel(generalChannel.id));
       handleCloseModal();
     } catch (error) {
-      console.error('Error deleting channel:', error);
+      console.error(t('ru.notify.notifyServerError'), error);
     }
   };
 
   const getChannelNameById = (channelId) => { // поиск названия выбранного канала по айди
     const channel = channels.find((ch) => ch.id === channelId);
-    return channel ? channel.name : 'Неизвестный канал';
+    return channel ? channel.name : '';
   };
 
   const handleSubmitModal = async (values) => { // добавление нового канала
@@ -88,7 +90,7 @@ const ModalAdd = () => {
         handleCloseModal();
       });
     } catch (error) {
-      console.error('Ошибка при создании канала:', error);
+      console.error(t('ru.notify.notifyServerError'), error);
     }
   };
 
@@ -99,7 +101,7 @@ const ModalAdd = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Добавить канал</div>
+              <div className="modal-title h4">{t('ru.chat.addChannelModalHeading')}</div>
               <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
             </div>
             <div className="modal-body">
@@ -121,8 +123,8 @@ const ModalAdd = () => {
                       <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
                     </div>
                     <div className="d-flex justify-content-end">
-                      <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
-                      <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>Отправить</button>
+                      <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
+                      <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>{t('ru.chat.addBtn')}</button>
                     </div>
                   </Form>
                 )}
@@ -137,14 +139,14 @@ const ModalAdd = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Удалить канал</div>
+              <div className="modal-title h4">{t('ru.chat.deleteChannelModalHeading')}</div>
               <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
             </div>
             <div className="modal-body">
-              <p className="lead">Вы уверены?</p>
+              <p className="lead">{t('ru.chat.deleteChannelModalText')}</p>
               <div className="d-flex justify-content-end">
-                <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
-                <button type="button" className="btn btn-danger" onClick={() => handleDeleteChannel()}>Удалить</button>
+                <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
+                <button type="button" className="btn btn-danger" onClick={() => handleDeleteChannel()}>{t('ru.chat.deleteChannelBtn')}</button>
               </div>
             </div>
           </div>
@@ -156,7 +158,7 @@ const ModalAdd = () => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Переименовать канал</div>
+              <div className="modal-title h4">{t('ru.chat.renameChannelModalHeading')}</div>
               <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
 
             </div>
@@ -176,11 +178,11 @@ const ModalAdd = () => {
                   <Form>
                     <div>
                       <Field type="text" name="name" id="name" className={`mb-2 form-control ${touched.name && errors.name ? 'is-invalid' : ''}`} />
-                      <label className="visually-hidden" htmlFor="name">Имя канала</label>
+                      <label className="visually-hidden" htmlFor="name">{t('ru.chat.inputNameChannel')}</label>
                       <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
                       <div className="d-flex justify-content-end">
-                        <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>Отменить</button>
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>Отправить</button>
+                        <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
+                        <button type="submit" className="btn btn-primary" disabled={isSubmitting || !dirty}>{t('ru.chat.addBtn')}</button>
                       </div>
                     </div>
                   </Form>

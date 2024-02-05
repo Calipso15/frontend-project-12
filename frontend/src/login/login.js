@@ -4,12 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../auth/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPage = () => {
   const { login } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const formik = useFormik({
@@ -25,11 +27,10 @@ const LoginPage = () => {
         login(token, username);
         navigate('/channels');
       } catch (error) {
-        setErrorMessage('Неверные имя пользователя или пароль');
+        setErrorMessage(t('ru.errorsTexts.errorNamePasswordMessage'));
       }
     },
   });
-
   const usernameInputRef = useRef(null);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const LoginPage = () => {
         <div className="d-flex flex-column h-100">
           <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
             <div className="container">
-              <a className="navbar-brand" href="/">Hexlet Chat</a>
+              <a className="navbar-brand" href="/">{t('ru.header.heading')}</a>
             </div>
           </nav>
           <div className="container-fluid h-100">
@@ -56,7 +57,7 @@ const LoginPage = () => {
                       <img src={hexletLogo} className="rounded-circle" alt="Войти" />
                     </div>
                     <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
-                      <h1 className="text-center mb-4">Войти</h1>
+                      <h1 className="text-center mb-4">{t('ru.authorization.signInBtn')}</h1>
                       <div className="form-floating mb-3">
                         <input
                           name="username"
@@ -69,7 +70,7 @@ const LoginPage = () => {
                           value={formik.values.username}
                           ref={usernameInputRef}
                         />
-                        <label htmlFor="username">Ваш ник</label>
+                        <label htmlFor="username">{t('ru.authorization.login')}</label>
 
                       </div>
                       <div className="form-floating mb-4">
@@ -84,20 +85,20 @@ const LoginPage = () => {
                           onChange={formik.handleChange}
                           value={formik.values.password}
                         />
-                        <label className="form-label" htmlFor="password">Пароль</label>
+                        <label className="form-label" htmlFor="password">{t('ru.authorization.password')}</label>
                         {errorMessage && (
                         <div className="invalid-tooltip d-block">
                           {errorMessage}
                         </div>
                         )}
                       </div>
-                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary">Войти</button>
+                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary">{t('ru.authorization.signInBtn')}</button>
                     </form>
                   </div>
                   <div className="card-footer p-4">
                     <div className="text-center">
-                      <span>Нет аккаунта?   </span>
-                      <a href="/signup">Регистрация</a>
+                      <span>{t('ru.footer.authorization')}</span>
+                      <a href="/signup">{t('ru.footer.authLink')}</a>
                     </div>
                   </div>
                 </div>

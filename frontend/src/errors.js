@@ -1,35 +1,24 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './auth/AuthContext';
+import { useTranslation } from 'react-i18next';
+import Navbar from './components/navBar';
 
 const NotFoundPage = () => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="h-100">
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/">Hexlet Chat</a>
-          <button type="button" className="btn btn-primary" onClick={handleLogout}>Выйти</button>
-        </div>
-      </nav>
+      <Navbar />
       <div className="text-center">
         <img
-          alt="Страница не найдена"
+          alt={t('ru.notFound.header')}
           className="img-fluid h-25"
           src="https://cdn2.hexlet.io/assets/error-pages/404-4b6ef16aba4c494d8101c104236304e640683fa9abdb3dd7a46cab7ad05d46e9.svg"
         />
-        <h1 className="h4 text-muted">Страница не найдена</h1>
+        <h1 className="h4 text-muted">{t('ru.notFound.header')}</h1>
         <p className="text-muted">
-          Но вы можете перейти
+          {t('ru.notFound.message')}
           {' '}
-          <a href="/">на главную страницу</a>
+          <a href="/">{t('ru.notFound.linkText')}</a>
         </p>
       </div>
     </div>

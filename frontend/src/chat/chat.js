@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
@@ -20,6 +20,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ChatPage = () => {
   const { token } = useAuth();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -48,12 +49,12 @@ const ChatPage = () => {
           dispatch(selectChannel(responseChannels.data[0].id));
         }
       } catch (error) {
-        console.error('Ошибка при получении данных с сервера');
+        console.error(t('ru.notify.notifyServerError'));
       }
     };
 
     fetchData();
-  }, [dispatch, token]);
+  }, [dispatch, token, t]);
 
   return (
     <div className="h-100">

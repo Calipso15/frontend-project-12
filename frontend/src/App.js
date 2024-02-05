@@ -5,6 +5,9 @@ import NotFoundPage from './errors';
 import ChatPage from './chat/chat';
 import { AuthProvider } from './auth/AuthContext';
 import Signup from './signup/signup';
+import initializeI18n from './locales/index';
+
+initializeI18n();
 
 const App = () => (
   <AuthProvider>

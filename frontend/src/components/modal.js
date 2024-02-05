@@ -7,6 +7,7 @@ import axios from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useAuth } from '../auth/AuthContext';
 import {
   addChannel, deleteChannel, renameChannel, selectChannel,
@@ -45,6 +46,8 @@ const ModalAdd = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(renameChannel({ id: channelId, name: newName }));
+      toast.success(t('ru.notify.notifyChangeChannel'));
+
       dispatch(selectChannel(channelId));
       handleCloseModal();
     } catch (error) {
@@ -63,6 +66,7 @@ const ModalAdd = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(deleteChannel(channelId));
+      toast.success(t('ru.notify.notifyDeletChannel'));
       dispatch(selectChannel(generalChannel.id));
       handleCloseModal();
     } catch (error) {
@@ -85,6 +89,7 @@ const ModalAdd = () => {
       }).then((response) => {
         dispatch(addChannel(response.data));
         dispatch(selectChannel(response.data.id));
+        toast.success(t('ru.notify.notifyCreateChannel'));
 
         dispatch(resetNewChannelName());
         handleCloseModal();

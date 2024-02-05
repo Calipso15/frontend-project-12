@@ -74,7 +74,6 @@ const ChatPage = () => {
           <ModalAdd />
         </div>
       </div>
-      <div className="Toastify" />
     </div>
   );
 };

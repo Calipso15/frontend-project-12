@@ -134,7 +134,6 @@ const Signup = () => {
           </div>
         </div>
       </div>
-      <div className="Toastify" />
     </div>
 
   );

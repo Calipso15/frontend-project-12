@@ -106,7 +106,6 @@ const LoginPage = () => {
             </div>
           </div>
         </div>
-        <div className="Toastify" />
       </div>
     </div>
   );

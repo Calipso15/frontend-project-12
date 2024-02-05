@@ -23,7 +23,6 @@ const LoginPage = () => {
       try {
         const response = await axios.post('/api/v1/login', values);
         const { token, username } = response.data;
-
         login(token, username);
         navigate('/channels');
       } catch (error) {

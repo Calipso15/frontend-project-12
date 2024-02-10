@@ -24,8 +24,10 @@ const init = () => {
     });
 
   const rollbarConfig = {
-    accessToken: process.env.REACT_APP_ROLLBAR,
-    environment: process.env.NODE_ENV,
+    enabled: process.env.NODE_ENV === 'production',
+    accessToken: process.env.ROLLBAR_TOKEN,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
   };
 
   function TestError() {

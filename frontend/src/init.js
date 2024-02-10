@@ -24,10 +24,8 @@ const init = () => {
     });
 
   const rollbarConfig = {
-    enabled: true,
-    accessToken: '815c6dc6f88a4344a43ba2989d9a4e30',
-    captureUncaught: true,
-    captureUnhandledRejections: true,
+    accessToken: process.env.REACT_APP_ROLLBAR,
+    environment: process.env.NODE_ENV,
   };
 
   function TestError() {

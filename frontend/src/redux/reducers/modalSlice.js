@@ -14,7 +14,6 @@ export const modalSlice = createSlice({
     },
     closeModal: (state) => {
       state.isModalOpen = false;
-      state.modalType = null;
     },
   },
 });

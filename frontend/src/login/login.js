@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -8,12 +9,19 @@ import { useTranslation } from 'react-i18next';
 import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../auth/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../index.css';
 
 const LoginPage = () => {
   const { login } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    usernameInputRef.current.focus();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -26,17 +34,23 @@ const LoginPage = () => {
         login(token, username);
         navigate('/channels');
       } catch (error) {
-        setErrorMessage(t('ru.errorsTexts.errorNamePasswordMessage'));
+        if (!error.isAxiosError) {
+          toast.error(t('ru.notify.unknown'));
+          return;
+        }
+        if (error.response?.status === 401) {
+          setErrorMessage('');
+          setTimeout(() => {
+            setErrorMessage(t('ru.errorsTexts.errorNamePasswordMessage'));
+            usernameInputRef.current.focus();
+            usernameInputRef.current.select();
+          }, 300);
+        } else {
+          toast.error(t('ru.notify.notifyErrorErrorNetwork'));
+        }
       }
     },
   });
-  const usernameInputRef = useRef(null);
-
-  useEffect(() => {
-    if (usernameInputRef.current) {
-      usernameInputRef.current.focus();
-    }
-  }, []);
 
   return (
     <div className="h-100">
@@ -97,6 +111,7 @@ const LoginPage = () => {
                   <div className="card-footer p-4">
                     <div className="text-center">
                       <span>{t('ru.footer.authorization')}</span>
+                      {' '}
                       <a href="/signup">{t('ru.footer.authLink')}</a>
                     </div>
                   </div>

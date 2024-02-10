@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { io } from 'socket.io-client';
-import { addMessage } from '../redux/reducers/messagesSlice';
+import { setMessage } from '../redux/reducers/messagesSlice';
 import {
   setChannels, selectChannel,
 } from '../redux/reducers/channelsSlice';
@@ -21,35 +21,27 @@ const ChatPage = () => {
   const { token } = useAuth();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io('/');
-    setSocket(newSocket);
-    return () => newSocket.close();
-  }, []);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('newMessage', (message) => {
-      dispatch(addMessage(message));
-    });
-  }, [socket, dispatch]);
-
-  useEffect(() => {
-    const fetchData = async () => { // получение данных с сервера по каналам
+    const fetchData = async () => {
       try {
         const responseChannels = await axios.get('/api/v1/channels', {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         dispatch(setChannels(responseChannels.data));
         if (responseChannels.data.length > 0) {
           dispatch(selectChannel(responseChannels.data[0].id));
         }
+        const responseMessages = await axios.get('/api/v1/messages', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setMessage(responseMessages.data));
       } catch (error) {
-        console.error(t('ru.notify.notifyServerError'));
+        if (!error.isAxiosError) {
+          toast.error(t('ru.notify.unknown'));
+          return;
+        }
+        toast.error(t('ru.notify.notifyErrorErrorNetwork'));
       }
     };
 

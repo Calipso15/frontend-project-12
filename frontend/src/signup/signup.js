@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -8,12 +9,18 @@ import * as Yup from 'yup';
 import { useAuth } from '../auth/AuthContext';
 import avatar from './avatar_signup.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../index.css';
 
 const Signup = () => {
   const { login } = useAuth();
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const inputNameRef = useRef(null);
+
+  useEffect(() => {
+    inputNameRef.current.focus();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -40,10 +47,16 @@ const Signup = () => {
         login(token, username);
         navigate('/channels');
       } catch (error) {
+        if (!error.isAxiosError) {
+          toast.error(t('ru.notify.unknown'));
+          return;
+        }
         if (error.response.status === 409) {
+          inputNameRef.current.focus();
+          inputNameRef.current.select();
           setErrorMessage(t('ru.errorsTexts.errorValidateUserAlreadyExist'));
         } else {
-          console.error(t('ru.notify.notifyServerError'), error);
+          toast.error(t('ru.notify.notifyErrorErrorNetwork'));
         }
       }
     },
@@ -68,7 +81,10 @@ const Signup = () => {
                     <div>
                       <img src={avatar} className="rounded-circle" alt="Регистрация" />
                     </div>
-                    <form className="w-50" onSubmit={formik.handleSubmit}>
+                    <form
+                      className="w-50"
+                      onSubmit={formik.handleSubmit}
+                    >
                       <h1 className="text-center mb-4">{t('ru.registration.header')}</h1>
                       <div className="form-floating mb-3">
                         <input
@@ -77,6 +93,7 @@ const Signup = () => {
                           autoComplete="username"
                           required=""
                           id="username"
+                          ref={inputNameRef}
                           className={`form-control ${(formik.touched.username && formik.errors.username) || errorMessage ? 'is-invalid' : ''}`}
                           value={formik.values.username}
                           onChange={formik.handleChange}
@@ -125,7 +142,6 @@ const Signup = () => {
                         <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
                       </div>
                       <button type="submit" className="w-100 btn btn-outline-primary">{t('ru.registration.signUpBtn')}</button>
-
                     </form>
                   </div>
                 </div>

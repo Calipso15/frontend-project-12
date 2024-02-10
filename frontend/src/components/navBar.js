@@ -7,7 +7,7 @@ const Navbar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleLogout = () => { // разлогиниваемся
+  const handleLogout = () => {
     logout();
     navigate('/login');
   };

@@ -1,31 +1,16 @@
-/* eslint-disable max-len */
+/* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import init from './init';
 import './index.css';
-import { Provider as StoreProvider } from 'react-redux';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Provider, ErrorBoundary } from '@rollbar/react';
+import initSocket from './sockets';
 
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import store from './redux/store';
-
-const rollbarConfig = {
-  enabled: true,
-  accessToken: '61faecb001aa49a09fb59cac1f76f65b',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-};
+const socket = initSocket();
+const vdom = init(socket);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <StoreProvider store={store}>
-    <Provider config={rollbarConfig}>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </Provider>
-  </StoreProvider>,
+  <React.StrictMode>
+    {vdom}
+  </React.StrictMode>,
 );
-
-reportWebVitals();

@@ -3,14 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import LoginPage from './login/login';
 import 'react-toastify/dist/ReactToastify.css';
-
-import NotFoundPage from './errors';
 import ChatPage from './chat/chat';
 import { AuthProvider } from './auth/AuthContext';
 import Signup from './signup/signup';
-import initializeI18n from './locales/index';
+import NotFoundPage from './errors';
 
-initializeI18n();
 
 const App = () => (
   <AuthProvider>

@@ -8,7 +8,6 @@ import { AuthProvider } from './auth/AuthContext';
 import Signup from './signup/signup';
 import NotFoundPage from './errors';
 
-
 const App = () => (
   <AuthProvider>
     <BrowserRouter>

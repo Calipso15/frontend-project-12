@@ -30,11 +30,17 @@ const init = () => {
     captureUnhandledRejections: true,
   };
 
+  function TestError() {
+    const a = null;
+    return a.hello();
+  }
+
   return (
     <I18nextProvider i18n={i18n}>
       <StoreProvider store={store}>
         <Provider config={rollbarConfig}>
           <ErrorBoundary>
+            <TestError />
             <App />
           </ErrorBoundary>
         </Provider>

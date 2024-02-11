@@ -49,7 +49,7 @@ const ChannelBox = () => {
   };
 
   const toggleDropdown = (channelId) => {
-    setDropdownOpen((prev) => ({ ...prev, [channelId]: !prev[channelId] }));
+    setDropdownOpen((prev) => ({ [channelId]: !prev[channelId] }));
   };
 
   return (

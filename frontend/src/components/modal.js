@@ -6,7 +6,7 @@ import {
 } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import leoProfanity from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
@@ -26,6 +26,7 @@ const ModalAdd = () => {
   const { isModalOpen, modalType } = useSelector((state) => state.modal);
   const selectChannelMenu = useSelector((state) => state.selectedChannel.selectedChannelMenu);
   const inputRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isModalOpen && (modalType === 'add' || modalType === 'rename')) {
@@ -49,10 +50,11 @@ const ModalAdd = () => {
   };
 
   const handleRenameChannel = async (newName) => {
+    setIsSubmitting(true);
     const channelId = selectChannelMenu;
+
     try {
       const cleanName = leoProfanity.clean(newName);
-
       await axios.patch(`/api/v1/channels/${channelId}`, {
         name: cleanName,
       }, {
@@ -60,19 +62,22 @@ const ModalAdd = () => {
       });
       toast.success(t('ru.notify.notifyChangeChannel'));
       dispatch(selectChannel(channelId));
-      handleCloseModal();
+      dispatch(closeModal());
     } catch (error) {
       if (!error.isAxiosError) {
         toast.error(t('ru.notify.unknown'));
         return;
       }
       toast.error(t('ru.notify.notifyErrorErrorNetwork'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const generalChannel = channels.find((channel) => channel.name === 'general');
 
   const handleDeleteChannel = async () => {
+    setIsSubmitting(true);
     const channelId = selectChannelMenu;
     try {
       await axios.delete(`/api/v1/messages/${channelId}`, {
@@ -90,6 +95,8 @@ const ModalAdd = () => {
         return;
       }
       toast.error(t('ru.notify.notifyErrorErrorNetwork'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -99,6 +106,7 @@ const ModalAdd = () => {
   };
 
   const handleSubmitModal = async (values) => {
+    setIsSubmitting(true);
     try {
       const cleanedName = leoProfanity.clean(values.name);
       const newChannel = { name: cleanedName, user: username };
@@ -118,6 +126,8 @@ const ModalAdd = () => {
         return;
       }
       toast.error(t('ru.notify.notifyErrorErrorNetwork'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -160,7 +170,7 @@ const ModalAdd = () => {
                         </div>
                         <div className="d-flex justify-content-end">
                           <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-                          <button type="submit" className="btn btn-primary">{t('ru.chat.addBtn')}</button>
+                          <button type="submit" disabled={isSubmitting} className="btn btn-primary">{t('ru.chat.addBtn')}</button>
                         </div>
                       </Form>
                     )}
@@ -185,7 +195,7 @@ const ModalAdd = () => {
                   <p className="lead">{t('ru.chat.deleteChannelModalText')}</p>
                   <div className="d-flex justify-content-end">
                     <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-                    <button type="button" className="btn btn-danger" onClick={() => handleDeleteChannel()}>{t('ru.chat.deleteChannelBtn')}</button>
+                    <button type="button" disabled={isSubmitting} className="btn btn-danger" onClick={() => handleDeleteChannel()}>{t('ru.chat.deleteChannelBtn')}</button>
                   </div>
                 </div>
               </div>
@@ -208,8 +218,8 @@ const ModalAdd = () => {
                     initialValues={{ name: getChannelNameById(selectChannelMenu) }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { resetForm }) => {
-                      handleRenameChannel(values.name);
-                      resetForm();
+                      handleRenameChannel(values.name)
+                        .then(() => resetForm());
                     }}
                     validateOnChange={false}
                     validateOnBlur={false}
@@ -223,7 +233,7 @@ const ModalAdd = () => {
                           <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
                           <div className="d-flex justify-content-end">
                             <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-                            <button type="submit" className="btn btn-primary">{t('ru.chat.addBtn')}</button>
+                            <button type="submit" disabled={isSubmitting} className="btn btn-primary">{t('ru.chat.addBtn')}</button>
                           </div>
                         </div>
                       </Form>

@@ -16,17 +16,11 @@ const rollbarConfig = {
   captureUnhandledRejections: true,
 };
 
-function TestError() {
-  const a = null;
-  return a.hello();
-}
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider config={rollbarConfig}>
       <ErrorBoundary>
-        <TestError />
         {vdom}
       </ErrorBoundary>
     </Provider>

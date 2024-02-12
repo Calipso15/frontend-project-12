@@ -3,13 +3,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import leoProfanity from 'leo-profanity';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
-import getChannelNameById from '../utils/search';
+import { getChannelNameById } from '../utils/searchId';
+import sendRequest from '../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
 
@@ -36,11 +36,7 @@ const MessageBox = () => {
     try {
       const filteredMessage = leoProfanity.clean(formData.message);
       const newMessage = { body: filteredMessage, channelId: selectedChannelId, username };
-      await axios.post('/api/v1/messages', newMessage, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await sendRequest('post', '/messages', newMessage, token);
       dispatch(resetMessage());
     } catch (error) {
       if (!error.isAxiosError) {

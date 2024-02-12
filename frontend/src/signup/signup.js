@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import signupSchema from '../schemas/signupSchema';
 import { useAuth } from '../auth/AuthContext';
 import Navbar from '../components/navBar';
 import avatar from './avatar_signup.jpg';
+import handleSuccess from '../utils/handleSuccess';
+import sendRequest from '../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
 
@@ -29,24 +30,11 @@ const Signup = () => {
       password: '',
       confirmPassword: '',
     },
-    validationSchema: Yup.object({
-      username: Yup.string()
-        .min(3, t('ru.errorsTexts.errorValidateMax20Min3'))
-        .max(20, t('ru.errorsTexts.errorValidateMax20Min3'))
-        .required(t('ru.errorsTexts.errorValidateRequiredField')),
-      password: Yup.string()
-        .min(6, t('ru.errorsTexts.errorValidateMin6'))
-        .required(t('ru.errorsTexts.errorValidateRequiredField')),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], t('ru.errorsTexts.errorValidateSamePasswords'))
-        .required(t('ru.errorsTexts.errorValidateRequiredField')),
-    }),
+    validationSchema: signupSchema(t),
     onSubmit: async (values) => {
       try {
-        const response = await axios.post('/api/v1/signup', values);
-        const { token, username } = response.data;
-        login(token, username);
-        navigate('/channels');
+        const response = await sendRequest('post', '/signup', values, null);
+        handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {
           toast.error(t('ru.notify.unknown'));

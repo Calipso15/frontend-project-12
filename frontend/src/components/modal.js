@@ -4,19 +4,19 @@ import {
   Field,
   ErrorMessage,
 } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import leoProfanity from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import modalSchema from '../schemas/modalSchema';
 import { useAuth } from '../auth/AuthContext';
 import {
   selectChannel,
 } from '../redux/reducers/channelsSlice';
 import { closeModal } from '../redux/reducers/modalSlice';
-import getChannelNameById from '../utils/search';
+import { getChannelNameById, getGeneralChannelId } from '../utils/searchId';
+import sendRequest from '../api/sendRequest';
 import '../index.css';
 
 const ModalAdd = () => {
@@ -36,14 +36,6 @@ const ModalAdd = () => {
     }
   }, [isModalOpen, modalType]);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, (t('ru.errorsTexts.errorValidateMax20Min3')))
-      .max(20, (t('ru.errorsTexts.errorValidateMax20Min3')))
-      .required((t('ru.errorsTexts.errorValidateRequiredField')))
-      .test('is-unique', (t('ru.errorsTexts.errorValidateUniquePasswords')), async (value) => !channels.some((channel) => channel.name === value)),
-  });
-
   const handleCloseModal = () => {
     dispatch(closeModal());
     document.body.classList.remove('modal-open');
@@ -53,14 +45,9 @@ const ModalAdd = () => {
   const handleRenameChannel = async (newName) => {
     setIsSubmitting(true);
     const channelId = selectChannelMenu;
-
     try {
       const cleanName = leoProfanity.clean(newName);
-      await axios.patch(`/api/v1/channels/${channelId}`, {
-        name: cleanName,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await sendRequest('patch', `channels/${channelId}`, { name: cleanName }, token);
       toast.success(t('ru.notify.notifyChangeChannel'));
       dispatch(selectChannel(channelId));
       dispatch(closeModal());
@@ -75,20 +62,14 @@ const ModalAdd = () => {
     }
   };
 
-  const generalChannel = channels.find((channel) => channel.name === 'general');
-
   const handleDeleteChannel = async () => {
     setIsSubmitting(true);
     const channelId = selectChannelMenu;
     try {
-      await axios.delete(`/api/v1/messages/${channelId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      await axios.delete(`/api/v1/channels/${channelId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await sendRequest('delete', `messages/${channelId}`, null, token);
+      await sendRequest('delete', `channels/${channelId}`, null, token);
       toast.success(t('ru.notify.notifyDeletChannel'));
-      dispatch(selectChannel(generalChannel.id));
+      dispatch(selectChannel(getGeneralChannelId(channels)));
       handleCloseModal();
     } catch (error) {
       if (!error.isAxiosError) {
@@ -106,16 +87,10 @@ const ModalAdd = () => {
     try {
       const cleanedName = leoProfanity.clean(values.name);
       const newChannel = { name: cleanedName, user: username };
-
-      axios.post('/api/v1/channels', newChannel, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((response) => {
-        dispatch(selectChannel(response.data.id));
-        toast.success(t('ru.notify.notifyCreateChannel'));
-        handleCloseModal();
-      });
+      const response = await sendRequest('post', 'channels', newChannel, token);
+      dispatch(selectChannel(response.data.id));
+      toast.success(t('ru.notify.notifyCreateChannel'));
+      handleCloseModal();
     } catch (error) {
       if (!error.isAxiosError) {
         toast.error(t('ru.notify.unknown'));
@@ -142,7 +117,7 @@ const ModalAdd = () => {
                 <div className="modal-body">
                   <Formik
                     initialValues={{ name: '' }}
-                    validationSchema={validationSchema}
+                    validationSchema={modalSchema(t, channels)}
                     onSubmit={(values, { resetForm }) => {
                       handleSubmitModal(values);
                       resetForm();
@@ -212,7 +187,7 @@ const ModalAdd = () => {
                 <div className="modal-body">
                   <Formik
                     initialValues={{ name: getChannelNameById(channels, selectChannelMenu) }}
-                    validationSchema={validationSchema}
+                    validationSchema={modalSchema(t, channels)}
                     onSubmit={(values, { resetForm }) => {
                       handleRenameChannel(values.name)
                         .then(() => resetForm());

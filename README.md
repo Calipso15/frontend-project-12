@@ -3,5 +3,4 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/3c85e7332902b9de9629/maintainability)](https://codeclimate.com/github/Calipso15/frontend-project-12/maintainability)
 
-Deploy
-# [App] https://frontend-project-kris.onrender.com/
+Deploy: https://frontend-project-kris.onrender.com/

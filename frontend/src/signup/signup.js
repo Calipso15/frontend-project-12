@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../auth/AuthContext';
+import Navbar from '../components/navBar';
 import avatar from './avatar_signup.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
@@ -68,11 +69,7 @@ const Signup = () => {
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
-          <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-            <div className="container">
-              <a className="navbar-brand" href="/">{t('ru.header.heading')}</a>
-            </div>
-          </nav>
+          <Navbar showButton={false} />
           <div className="container-fluid h-100">
             <div className="row justify-content-center align-content-center h-100">
               <div className="col-12 col-md-8 col-xxl-6">

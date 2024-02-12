@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../auth/AuthContext';
+import Navbar from '../components/navBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
 
@@ -56,11 +57,7 @@ const LoginPage = () => {
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
-          <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-            <div className="container">
-              <a className="navbar-brand" href="/">{t('ru.header.heading')}</a>
-            </div>
-          </nav>
+          <Navbar showButton={false} />
           <div className="container-fluid h-100">
             <div className="row align-content-center justify-content-center  h-100">
               <div className="col-12 col-md-8 col-xxl-6">

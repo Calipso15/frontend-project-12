@@ -9,6 +9,7 @@ import leoProfanity from 'leo-profanity';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
+import getChannelNameById from '../utils/search';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
 
@@ -61,10 +62,6 @@ const MessageBox = () => {
     ));
   };
 
-  const getChannelNameById = (channelId) => {
-    const channel = channels.find((ch) => ch.id === channelId);
-    return channel ? channel.name : '';
-  };
   const messagesLength = messages.filter((message) => message.channelId === selectedChannelId);
 
   return (
@@ -74,7 +71,7 @@ const MessageBox = () => {
           <b>
             #
             {' '}
-            {getChannelNameById(selectedChannelId)}
+            {getChannelNameById(channels, selectedChannelId)}
           </b>
         </p>
         <span className="text-muted">

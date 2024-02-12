@@ -16,6 +16,7 @@ import {
   selectChannel,
 } from '../redux/reducers/channelsSlice';
 import { closeModal } from '../redux/reducers/modalSlice';
+import getChannelNameById from '../utils/search';
 import '../index.css';
 
 const ModalAdd = () => {
@@ -98,11 +99,6 @@ const ModalAdd = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const getChannelNameById = (channelId) => {
-    const channel = channels.find((ch) => ch.id === channelId);
-    return channel ? channel.name : '';
   };
 
   const handleSubmitModal = async (values) => {
@@ -215,7 +211,7 @@ const ModalAdd = () => {
                 </div>
                 <div className="modal-body">
                   <Formik
-                    initialValues={{ name: getChannelNameById(selectChannelMenu) }}
+                    initialValues={{ name: getChannelNameById(channels, selectChannelMenu) }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { resetForm }) => {
                       handleRenameChannel(values.name)

@@ -39,41 +39,38 @@ const ModalAdd = () => {
     document.body.style.overflow = 'auto';
   };
 
-  const handleDeleteChannel = async () => {
-    setIsSubmitting(true);
-    try {
-      await sendRequest('delete', `messages/${selectChannelMenu}`, null, token);
-      await sendRequest('delete', `channels/${selectChannelMenu}`, null, token);
-      toast.success(t('ru.notify.notifyDeletChannel'));
-      dispatch(selectChannel(getGeneralChannelId(channels)));
-      handleCloseModal();
-    } catch (error) {
-      if (!error.isAxiosError) {
-        toast.error(t('ru.notify.unknown'));
-      } else {
-        toast.error(t('ru.notify.notifyErrorErrorNetwork'));
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleSubmit = async (values) => {
     setIsSubmitting(true);
+
     try {
       const cleanedName = leoProfanity.clean(values.name);
       const requestData = modalType === 'add' ? { name: cleanedName, user: username } : { name: cleanedName };
-      const method = modalType === 'add' ? 'post' : 'patch';
-      const endpoint = modalType === 'add' ? 'channels' : `channels/${selectChannelMenu}`;
-      const response = await sendRequest(method, endpoint, requestData, token);
-      if (modalType === 'add') {
-        dispatch(selectChannel(response.data.id));
-        toast.success(t('ru.notify.notifyCreateChannel'));
-      } else {
-        dispatch(selectChannel(selectChannelMenu));
-        toast.success(t('ru.notify.notifyChangeChannel'));
+
+      switch (modalType) {
+        case 'add':
+          await sendRequest('post', 'channels', requestData, token)
+            .then((addResponse) => {
+              dispatch(selectChannel(addResponse.data.id));
+              toast.success(t('ru.notify.notifyCreateChannel'));
+            });
+          break;
+        case 'rename':
+          sendRequest('patch', `channels/${selectChannelMenu}`, requestData, token);
+
+          dispatch(selectChannel(selectChannelMenu));
+          toast.success(t('ru.notify.notifyChangeChannel'));
+
+          break;
+        case 'delete':
+          await sendRequest('delete', `messages/${selectChannelMenu}`, null, token);
+          await sendRequest('delete', `channels/${selectChannelMenu}`, null, token);
+          dispatch(selectChannel(getGeneralChannelId(channels)));
+          toast.success(t('ru.notify.notifyDeletChannel'));
+          handleCloseModal();
+          break;
+        default:
+          break;
       }
-      handleCloseModal();
     } catch (error) {
       if (!error.isAxiosError) {
         toast.error(t('ru.notify.unknown'));
@@ -82,6 +79,7 @@ const ModalAdd = () => {
       }
     } finally {
       setIsSubmitting(false);
+      handleCloseModal();
     }
   };
 
@@ -90,8 +88,6 @@ const ModalAdd = () => {
     rename: t('ru.chat.renameChannelModalHeading'),
     delete: t('ru.chat.deleteChannelModalHeading'),
   };
-
-  const modalHeading = modalHeadings[modalType] || '';
 
   const renderModalBody = () => {
     if (modalType === 'delete') {
@@ -138,8 +134,7 @@ const ModalAdd = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <div className="modal-title h4">
-                  {modalHeading}
-
+                  {modalHeadings[modalType]}
                 </div>
                 <button type="button" aria-label="Close" data-bs-dismiss="modal" className="btn btn-close" onClick={handleCloseModal} />
               </div>
@@ -149,7 +144,7 @@ const ModalAdd = () => {
               {modalType === 'delete' && (
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-                  <button type="button" disabled={isSubmitting} className="btn btn-danger" onClick={handleDeleteChannel}>{t('ru.chat.deleteChannelBtn')}</button>
+                  <button type="button" disabled={isSubmitting} className="btn btn-danger" onClick={handleSubmit}>{t('ru.chat.deleteChannelBtn')}</button>
                 </div>
               )}
             </div>

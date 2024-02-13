@@ -1,4 +1,3 @@
-
 const handleSuccess = (data, login, navigate) => {
   const { token, username } = data;
   login(token, username);
@@ -6,4 +5,3 @@ const handleSuccess = (data, login, navigate) => {
 };
 
 export default handleSuccess;
-

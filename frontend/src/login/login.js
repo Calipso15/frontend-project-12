@@ -32,8 +32,8 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       try {
         const response = await sendRequest('post', '/login', values, null);
-        const { token, username } = response.data;
-        login(token, username);
+        localStorage.setItem('token', response.data.token);
+        login(response.data.token);
         navigate('/channels');
         // handleSuccess(response.data, login, navigate);
       } catch (error) {

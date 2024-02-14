@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../auth/AuthContext';
 import Navbar from '../components/navBar';
-import handleSuccess from '../utils/handleSuccess';
+// import handleSuccess from '../utils/handleSuccess';
 import sendRequest from '../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
@@ -32,7 +32,10 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       try {
         const response = await sendRequest('post', '/login', values, null);
-        handleSuccess(response.data, login, navigate);
+        const { token, username } = response.data;
+        login(token, username);
+        navigate('/channels');
+        // handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {
           toast.error(t('ru.notify.unknown'));

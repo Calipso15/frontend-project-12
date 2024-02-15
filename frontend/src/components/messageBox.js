@@ -36,7 +36,7 @@ const MessageBox = () => {
     try {
       const filteredMessage = leoProfanity.clean(formData.message);
       const newMessage = { body: filteredMessage, channelId: selectedChannelId, username };
-      await sendRequest('post', '/messages', newMessage, token);
+      await sendRequest('post', 'messages', newMessage, token);
       dispatch(resetMessage());
     } catch (error) {
       if (!error.isAxiosError) {

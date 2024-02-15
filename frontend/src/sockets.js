@@ -4,7 +4,7 @@ import { addMessage } from './redux/reducers/messagesSlice';
 import { addChannel, deleteChannel, renameChannel } from './redux/reducers/channelsSlice';
 
 const initSocket = () => {
-  const socket = io('http://localhost:5001');
+  const socket = io();
 
   socket.on('newMessage', (message) => {
     store.dispatch(addMessage(message));

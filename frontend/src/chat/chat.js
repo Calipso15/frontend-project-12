@@ -23,6 +23,7 @@ const ChatPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    console.log(token);
     const fetchData = async () => {
       try {
         const responseChannels = await sendRequest('get', 'channels', null, token);

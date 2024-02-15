@@ -33,7 +33,7 @@ const Signup = () => {
     validationSchema: signupSchema(t),
     onSubmit: async (values) => {
       try {
-        const response = await sendRequest('post', '/signup', values, null);
+        const response = await sendRequest('post', 'signup', values, null);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {

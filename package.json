@@ -1,7 +1,6 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "proxy": "http://localhost:5001",
   "description": "[![Actions Status](https://github.com/Calipso15/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Calipso15/frontend-project-12/actions)",
   "main": "src/index.js",
   "scripts": {

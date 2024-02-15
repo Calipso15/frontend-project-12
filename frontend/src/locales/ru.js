@@ -42,7 +42,7 @@ const ru = {
     errorNamePasswordMessage: 'Неверные имя пользователя или пароль',
     errorPasswordMessage: '',
     errorValidateRequiredField: 'Oбязательное поле',
-    errorValidateMax20Min3: 'Oт 3 до 20 символов',
+    errorValidateMax20Min3: 'От 3 до 20 символов',
     errorValidateMin5: 'Oт 5 символов',
     errorValidateMin6: 'Не менее 6 символов',
     errorValidateSamePasswords: 'Пароли должны совпадать',

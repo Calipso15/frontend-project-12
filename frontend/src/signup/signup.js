@@ -49,8 +49,6 @@ const Signup = () => {
         }
       }
     },
-    validateOnChange: false,
-
   });
 
   return (

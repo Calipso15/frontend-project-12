@@ -31,7 +31,7 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await sendRequest('post', '/login', values, null);
+        const response = await sendRequest('post', 'login', values, null);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {

@@ -34,8 +34,7 @@ const MessageBox = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const filteredMessage = leoProfanity.clean(formData.message);
-      const newMessage = { body: filteredMessage, channelId: selectedChannelId, username };
+      const newMessage = { body: formData.message, channelId: selectedChannelId, username };
       await sendRequest('post', 'messages', newMessage, token);
       dispatch(resetMessage());
     } catch (error) {
@@ -53,7 +52,7 @@ const MessageBox = () => {
       <div key={message.id} className="text-break mb-2">
         <b>{message.username}</b>
         {': '}
-        {message.body}
+        {leoProfanity.clean(message.body)}
       </div>
     ));
   };

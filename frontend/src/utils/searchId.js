@@ -1,6 +1,8 @@
+import leoProfanity from 'leo-profanity';
+
 const getChannelNameById = (channels, channelId) => {
   const channel = channels.find((ch) => ch.id === channelId);
-  return channel ? channel.name : '';
+  return channel ? leoProfanity.clean(channel.name) : '';
 };
 
 const getGeneralChannelId = (channels) => {

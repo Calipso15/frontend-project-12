@@ -2,9 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import leoProfanity from 'leo-profanity';
 import { selectChannel } from '../redux/reducers/channelsSlice';
 import { addSelectedChannel } from '../redux/reducers/selectedChannelSlice';
 import { openModal } from '../redux/reducers/modalSlice';
+
 import '../index.css';
 
 const ChannelBox = () => {
@@ -77,7 +79,7 @@ const ChannelBox = () => {
               <button type="button" className={`w-100 rounded-0 text-start btn ${selectedChannelId === channel.id ? 'btn-secondary' : ''}`} onClick={() => handleChannelSelect(channel.id)}>
                 #
                 {' '}
-                {channel.name}
+                {leoProfanity.clean(channel.name)}
               </button>
               {(channel.name !== 'general' && channel.name !== 'random') && (
               <>

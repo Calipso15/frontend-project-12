@@ -5,7 +5,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import leoProfanity from 'leo-profanity';
 import modalSchema from '../schemas/modalSchema';
 import { useAuth } from '../auth/AuthContext';
 import {
@@ -43,8 +42,7 @@ const ModalAdd = () => {
     setIsSubmitting(true);
 
     try {
-      const cleanedName = leoProfanity.clean(values.name);
-      const requestData = modalType === 'add' ? { name: cleanedName, user: username } : { name: cleanedName };
+      const requestData = modalType === 'add' ? { name: values.name, user: username } : { name: values.name };
 
       switch (modalType) {
         case 'add':

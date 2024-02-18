@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import leoProfanity from 'leo-profanity';
 import { selectChannel } from '../redux/reducers/channelsSlice';
 import { addSelectedChannel } from '../redux/reducers/selectedChannelSlice';
 import { openModal } from '../redux/reducers/modalSlice';

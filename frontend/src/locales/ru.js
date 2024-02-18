@@ -23,6 +23,10 @@ const ru = {
     renameChannelBtn: 'Переименовать',
     dropdownListSwitch: 'Переключатель выпадающего списка',
   },
+  messages: {
+    newMessage: 'Новое сообщение',
+    placeholderMessage: 'Введите сообщение...',
+  },
   authorization: {
     header: 'Авторизация',
     login: 'Ваш ник',

@@ -5,6 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import leoProfanity from 'leo-profanity';
 import modalSchema from '../schemas/modalSchema';
 import { useAuth } from '../auth/AuthContext';
 import {
@@ -23,7 +24,7 @@ const ModalAdd = () => {
   const { isModalOpen, modalType } = useSelector((state) => state.modal);
   const selectChannelMenu = useSelector((state) => state.selectedChannel.selectedChannelMenu);
   const inputRef = useRef(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitt, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isModalOpen && (modalType === 'add' || modalType === 'rename')) {
@@ -37,13 +38,11 @@ const ModalAdd = () => {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
   };
-
   const handleSubmit = async (values) => {
     setIsSubmitting(true);
-
+    const cleanedName = leoProfanity.clean(values.name);
     try {
-      const requestData = modalType === 'add' ? { name: values.name, user: username } : { name: values.name };
-
+      const requestData = modalType === 'add' ? { name: cleanedName, user: username } : { name: cleanedName };
       switch (modalType) {
         case 'add':
           await sendRequest('post', 'channels', requestData, token)
@@ -54,10 +53,8 @@ const ModalAdd = () => {
           break;
         case 'rename':
           sendRequest('patch', `channels/${selectChannelMenu}`, requestData, token);
-
           dispatch(selectChannel(selectChannelMenu));
           toast.success(t('ru.notify.notifyChangeChannel'));
-
           break;
         case 'delete':
           await sendRequest('delete', `messages/${selectChannelMenu}`, null, token);
@@ -101,7 +98,9 @@ const ModalAdd = () => {
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ errors, touched }) => (
+        {({
+          errors, touched, setFieldValue,
+        }) => (
           <Form>
             <div>
               <Field
@@ -110,16 +109,25 @@ const ModalAdd = () => {
                 name="name"
                 id="name"
                 className={`mb-2 form-control ${touched.name && errors.name ? 'is-invalid' : ''}`}
+                validate={(value) => {
+                  if (leoProfanity.check(value)) {
+                    const cleanedName = leoProfanity.clean(value);
+                    setFieldValue('name', cleanedName);
+                  } else {
+                    setFieldValue('name', value);
+                  }
+                }}
               />
               <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
             </div>
             <div className="d-flex justify-content-end">
               <button type="button" className="me-2 btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{t('ru.chat.addBtn')}</button>
+              <button type="submit" disabled={isSubmitt} className="btn btn-primary">{t('ru.chat.addBtn')}</button>
             </div>
           </Form>
         )}
       </Formik>
+
     );
   };
 
@@ -142,7 +150,7 @@ const ModalAdd = () => {
               {modalType === 'delete' && (
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>{t('ru.chat.cancelBtn')}</button>
-                  <button type="button" disabled={isSubmitting} className="btn btn-danger" onClick={handleSubmit}>{t('ru.chat.deleteChannelBtn')}</button>
+                  <button type="button" disabled={isSubmitt} className="btn btn-danger" onClick={handleSubmit}>{t('ru.chat.deleteChannelBtn')}</button>
                 </div>
               )}
             </div>

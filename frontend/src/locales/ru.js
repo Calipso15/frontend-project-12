@@ -47,7 +47,7 @@ const ru = {
     errorValidateMin6: 'Не менее 6 символов',
     errorValidateSamePasswords: 'Пароли должны совпадать',
     errorValidateUserAlreadyExist: 'Такой пользователь уже существует',
-    errorValidateUniquePasswords: 'Должно быть уникальным',
+    errorValidateUnique: 'Должно быть уникальным',
   },
   notify: {
     notifyErrorErrorNetwork: 'Ошибка соединения',

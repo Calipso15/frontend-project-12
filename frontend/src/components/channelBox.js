@@ -79,7 +79,7 @@ const ChannelBox = () => {
               <button type="button" className={`w-100 rounded-0 text-start btn ${selectedChannelId === channel.id ? 'btn-secondary' : ''}`} onClick={() => handleChannelSelect(channel.id)}>
                 #
                 {' '}
-                {leoProfanity.clean(channel.name)}
+                {(channel.name)}
               </button>
               {(channel.name !== 'general' && channel.name !== 'random') && (
               <>

@@ -77,8 +77,7 @@ const ChannelBox = () => {
 
             <div className={`btn-group  d-flex align-items-center ${openDropdowns[channel.id] ? 'show' : ''}`}>
               <button type="button" className={`w-100 rounded-0 text-start btn ${selectedChannelId === channel.id ? 'btn-secondary' : ''}`} onClick={() => handleChannelSelect(channel.id)}>
-                #
-                {' '}
+                <span className="me-1">#</span>
                 {(channel.name)}
               </button>
               {(channel.name !== 'general' && channel.name !== 'random') && (

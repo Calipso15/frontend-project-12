@@ -104,7 +104,6 @@ const ModalAdd = () => {
           <Form>
             <div>
               <Field
-                type="text"
                 innerRef={inputRef}
                 name="name"
                 id="name"

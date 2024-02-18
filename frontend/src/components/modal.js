@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Formik, Form, Field, ErrorMessage,
@@ -105,6 +106,7 @@ const ModalAdd = () => {
             <div>
               <Field
                 innerRef={inputRef}
+                type="text"
                 name="name"
                 id="name"
                 className={`mb-2 form-control ${touched.name && errors.name ? 'is-invalid' : ''}`}
@@ -117,6 +119,7 @@ const ModalAdd = () => {
                   }
                 }}
               />
+              <label className="visually-hidden" htmlFor="name">Имя канала</label>
               <ErrorMessage name="name" component="div" className="invalid-feedback" style={{ display: 'block' }} />
             </div>
             <div className="d-flex justify-content-end">

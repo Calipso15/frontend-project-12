@@ -92,8 +92,9 @@ const ChannelBox = () => {
                   <span className="visually-hidden">{t('ru.chat.dropdownListSwitch')}</span>
 
                 </button>
-                <div
+                <button
                   aria-labelledby="react-aria7111339487-1"
+                  type="button"
                   className={`dropdown-menu ${openDropdowns[channel.id] ? 'show' : ''}`}
                   data-popper-reference-hidden="false"
                   data-popper-escaped="false"
@@ -122,7 +123,7 @@ const ChannelBox = () => {
                     {t('ru.chat.renameChannelBtn')}
                   </a>
 
-                </div>
+                </button>
               </>
               )}
             </div>

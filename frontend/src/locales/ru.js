@@ -21,7 +21,7 @@ const ru = {
     renameChannelModalHeading: 'Переименовать канал',
     inputNewName: 'Введите новое название',
     renameChannelBtn: 'Переименовать',
-    dropdownListSwitch: 'Переключатель выпадающего списка',
+    dropdownListSwitch: 'Управление каналом',
   },
   messages: {
     newMessage: 'Новое сообщение',

@@ -19,7 +19,6 @@ const ru = {
     deleteChannelModalText: 'Вы уверены?',
     deleteChannelBtn: 'Удалить',
     renameChannelModalHeading: 'Переименовать канал',
-    inputNewName: 'Введите новое название',
     renameChannelBtn: 'Переименовать',
     dropdownListSwitch: 'Управление каналом',
   },
@@ -42,7 +41,6 @@ const ru = {
     signUpBtn: 'Зарегистрироваться',
   },
   errorsTexts: {
-    noErrors: 'отлично!',
     errorNamePasswordMessage: 'Неверные имя пользователя или пароль',
     errorPasswordMessage: '',
     errorValidateRequiredField: 'Oбязательное поле',

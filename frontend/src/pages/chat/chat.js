@@ -5,16 +5,16 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { setMessage } from '../redux/reducers/messagesSlice';
+import { setMessage } from '../../redux/reducers/messagesSlice';
 import {
   setChannels, selectChannel,
-} from '../redux/reducers/channelsSlice';
-import ModalAdd from '../components/modal';
-import { useAuth } from '../auth/AuthContext';
-import Navbar from '../components/navBar';
-import ChannelBox from '../components/channelBox';
-import MessageBox from '../components/messageBox';
-import sendRequest from '../api/sendRequest';
+} from '../../redux/reducers/channelsSlice';
+import ModalAdd from '../../components/modal';
+import { useAuth } from '../../auth/AuthContext';
+import Navbar from '../../components/navBar';
+import ChannelBox from '../../components/channelBox';
+import MessageBox from '../../components/messageBox';
+import sendRequest from '../../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ChatPage = () => {

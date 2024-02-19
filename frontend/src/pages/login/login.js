@@ -6,12 +6,12 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import hexletLogo from './loginImage.jpeg';
-import { useAuth } from '../auth/AuthContext';
-import Navbar from '../components/navBar';
-import handleSuccess from '../utils/handleSuccess';
-import sendRequest from '../api/sendRequest';
+import { useAuth } from '../../auth/AuthContext';
+import Navbar from '../../components/navBar';
+import handleSuccess from '../../utils/handleSuccess';
+import sendRequest from '../../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../index.css';
+import '../../index.css';
 
 const LoginPage = () => {
   const { login } = useAuth();

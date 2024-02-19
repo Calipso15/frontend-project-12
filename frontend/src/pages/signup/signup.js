@@ -4,14 +4,14 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import signupSchema from '../schemas/signupSchema';
-import { useAuth } from '../auth/AuthContext';
-import Navbar from '../components/navBar';
+import signupSchema from '../../schemas/signupSchema';
+import { useAuth } from '../../auth/AuthContext';
+import Navbar from '../../components/navBar';
 import avatar from './avatar_signup.jpg';
-import handleSuccess from '../utils/handleSuccess';
-import sendRequest from '../api/sendRequest';
+import handleSuccess from '../../utils/handleSuccess';
+import sendRequest from '../../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../index.css';
+import '../../index.css';
 
 const Signup = () => {
   const { login } = useAuth();

@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
@@ -22,8 +23,20 @@ const ChatPage = () => {
   const { token } = useAuth();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate('/login');
+  //   }
+  //   return undefined;
+  // }, [token, navigate]);
 
   useEffect(() => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     const fetchData = async () => {
       try {
         const responseChannels = await axios.get(routes.channelPath(), {
@@ -49,9 +62,12 @@ const ChatPage = () => {
         toast.error(t('ru.notify.notifyErrorErrorNetwork'));
       }
     };
-
     fetchData();
-  }, [dispatch, token, t]);
+  }, [dispatch, token, t, navigate]);
+
+  if (!token) {
+    return null;
+  }
 
   return (
     <div className="h-100">

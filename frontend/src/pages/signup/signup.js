@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +10,7 @@ import { useAuth } from '../../auth/AuthContext';
 import Navbar from '../../components/navBar';
 import avatar from './avatar_signup.jpg';
 import handleSuccess from '../../utils/handleSuccess';
-import sendRequest from '../../api/sendRequest';
+import routes from '../../api/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../index.css';
 
@@ -19,6 +20,7 @@ const Signup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const inputNameRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     inputNameRef.current.focus();
@@ -33,7 +35,8 @@ const Signup = () => {
     validationSchema: signupSchema(t),
     onSubmit: async (values) => {
       try {
-        const response = await sendRequest('post', 'signup', values, null);
+        setLoading(true);
+        const response = await axios.post(routes.signupPath(), values);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {
@@ -47,6 +50,8 @@ const Signup = () => {
         } else {
           toast.error(t('ru.notify.notifyErrorErrorNetwork'));
         }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -124,7 +129,9 @@ const Signup = () => {
 
                         <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
                       </div>
-                      <button type="submit" className="w-100 btn btn-outline-primary">{t('ru.registration.signUpBtn')}</button>
+                      <button type="submit" className="w-100 btn btn-outline-primary" disabled={loading}>
+                        {loading ? <div className="spinner-border" role="status" /> : t('ru.registration.signUpBtn')}
+                      </button>
                     </form>
                   </div>
                 </div>

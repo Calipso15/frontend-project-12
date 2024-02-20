@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useRef } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import leoProfanity from 'leo-profanity';
@@ -10,7 +11,7 @@ import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
 import { getChannelNameById } from '../utils/searchId';
 import scrollToBottom from '../utils/scrollToBottom';
-import sendRequest from '../api/sendRequest';
+import routes from '../api/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
 
@@ -40,7 +41,11 @@ const MessageBox = () => {
         channelId: selectedChannelId,
         username,
       };
-      await sendRequest('post', 'messages', newMessage, token);
+      await axios.post(routes.messagesPath(), newMessage, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       dispatch(resetMessage());
       scrollToBottom();
     } catch (error) {

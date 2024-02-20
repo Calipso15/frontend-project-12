@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from 'react';
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
@@ -14,7 +15,7 @@ import { useAuth } from '../../auth/AuthContext';
 import Navbar from '../../components/navBar';
 import ChannelBox from '../../components/channelBox';
 import MessageBox from '../../components/messageBox';
-import sendRequest from '../../api/sendRequest';
+import routes from '../../api/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ChatPage = () => {
@@ -25,12 +26,20 @@ const ChatPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseChannels = await sendRequest('get', 'channels', null, token);
+        const responseChannels = await axios.get(routes.channelPath(), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         dispatch(setChannels(responseChannels.data));
         if (responseChannels.data.length > 0) {
           dispatch(selectChannel(responseChannels.data[0].id));
         }
-        const responseMessages = await sendRequest('get', 'messages', null, token);
+        const responseMessages = await axios.get(routes.messagesPath(), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         dispatch(setMessage(responseMessages.data));
       } catch (error) {
         if (!error.isAxiosError) {

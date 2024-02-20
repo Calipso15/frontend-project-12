@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import React, {
-  createContext, useContext, useState, useMemo,
+  createContext, useContext, useState,
 } from 'react';
 
 const AuthContext = createContext();
@@ -22,9 +23,12 @@ const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
-  const authValue = useMemo(() => ({
-    token, username, login, logout,
-  }), [token, username]);
+  const authValue = {
+    token,
+    username,
+    login,
+    logout,
+  };
 
   return (
     <AuthContext.Provider value={authValue}>

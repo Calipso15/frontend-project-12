@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +10,7 @@ import hexletLogo from './loginImage.jpeg';
 import { useAuth } from '../../auth/AuthContext';
 import Navbar from '../../components/navBar';
 import handleSuccess from '../../utils/handleSuccess';
-import sendRequest from '../../api/sendRequest';
+import routes from '../../api/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../index.css';
 
@@ -19,6 +20,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const usernameInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     usernameInputRef.current.focus();
@@ -31,7 +33,8 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await sendRequest('post', 'login', values, null);
+        setLoading(true);
+        const response = await axios.post(routes.loginPath(), values);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
         if (!error.isAxiosError) {
@@ -48,6 +51,8 @@ const LoginPage = () => {
         } else {
           toast.error(t('ru.notify.notifyErrorErrorNetwork'));
         }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -101,7 +106,9 @@ const LoginPage = () => {
                         </div>
                         )}
                       </div>
-                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary">{t('ru.authorization.signInBtn')}</button>
+                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={loading}>
+                        {loading ? <div className="spinner-border" role="status" /> : t('ru.authorization.signInBtn')}
+                      </button>
                     </form>
                   </div>
                   <div className="card-footer p-4">

@@ -9,7 +9,7 @@
 Hexlet Chat
 =======
 
-Chat is a simplistic alternative to Slack chat - a real-time React/Redux application using axios, REST, websockets, React Hooks + Formik
+Chat is a simplistic alternative to Slack chat - a real-time React/Redux application using axios, REST, websockets, React Hooks + reduxjs/toolkit+ Formik
 
 
 Deploy: https://frontend-project-kris.onrender.com/

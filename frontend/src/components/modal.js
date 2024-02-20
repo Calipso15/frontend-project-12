@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Formik, Form, Field, ErrorMessage,
 } from 'formik';
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,7 +15,7 @@ import {
 } from '../redux/reducers/channelsSlice';
 import { closeModal } from '../redux/reducers/modalSlice';
 import { getChannelNameById, getGeneralChannelId } from '../utils/searchId';
-import sendRequest from '../api/sendRequest';
+import routes from '../api/routes';
 import '../index.css';
 
 const ModalAdd = () => {
@@ -46,20 +47,36 @@ const ModalAdd = () => {
       const requestData = modalType === 'add' ? { name: cleanedName, user: username } : { name: cleanedName };
       switch (modalType) {
         case 'add':
-          await sendRequest('post', 'channels', requestData, token)
+          await axios.post(routes.channelPath(), requestData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
             .then((addResponse) => {
               dispatch(selectChannel(addResponse.data.id));
               toast.success(t('ru.notify.notifyCreateChannel'));
             });
           break;
         case 'rename':
-          sendRequest('patch', `channels/${selectChannelMenu}`, requestData, token);
+          await axios.patch(`${routes.channelPath()}/${selectChannelMenu}`, requestData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           dispatch(selectChannel(selectChannelMenu));
           toast.success(t('ru.notify.notifyChangeChannel'));
           break;
         case 'delete':
-          await sendRequest('delete', `messages/${selectChannelMenu}`, null, token);
-          await sendRequest('delete', `channels/${selectChannelMenu}`, null, token);
+          await axios.delete(`${routes.messagesPath()}/${selectChannelMenu}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          await axios.delete(`${routes.channelPath()}/${selectChannelMenu}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           dispatch(selectChannel(getGeneralChannelId(channels)));
           toast.success(t('ru.notify.notifyDeletChannel'));
           handleCloseModal();

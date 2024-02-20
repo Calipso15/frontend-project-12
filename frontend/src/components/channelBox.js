@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChannel } from '../redux/reducers/channelsSlice';
 import { addSelectedChannel } from '../redux/reducers/selectedChannelSlice';
+import scrollToBottom from '../utils/scrollToBottom';
 import { openModal } from '../redux/reducers/modalSlice';
 
 import '../index.css';
@@ -23,6 +24,10 @@ const ChannelBox = () => {
       addChannelBattonRef.current.focus();
     }
   }, [isModalOpen, modalType]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedChannelId]);
 
   const handleOpenModal = (type) => {
     dispatch(openModal(type));

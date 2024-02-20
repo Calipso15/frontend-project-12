@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateMessage, resetMessage } from '../redux/reducers/formDataSlice';
 import { useAuth } from '../auth/AuthContext';
 import { getChannelNameById } from '../utils/searchId';
+import scrollToBottom from '../utils/scrollToBottom';
 import sendRequest from '../api/sendRequest';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
@@ -41,6 +42,7 @@ const MessageBox = () => {
       };
       await sendRequest('post', 'messages', newMessage, token);
       dispatch(resetMessage());
+      scrollToBottom();
     } catch (error) {
       if (!error.isAxiosError) {
         toast.error(t('ru.notify.unknown'));

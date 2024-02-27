@@ -77,7 +77,7 @@ const LoginPage = () => {
                           name="username"
                           autoComplete="username"
                           required=""
-                          placeholder="Ваш ник"
+                          placeholder={t('ru.authorization.login')}
                           id="username"
                           className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
                           onChange={formik.handleChange}
@@ -92,7 +92,7 @@ const LoginPage = () => {
                           name="password"
                           autoComplete="current-password"
                           required=""
-                          placeholder="Пароль"
+                          placeholder={t('ru.authorization.password')}
                           type="password"
                           id="password"
                           className={`form-control ${errorMessage ? 'is-invalid' : ''}`}

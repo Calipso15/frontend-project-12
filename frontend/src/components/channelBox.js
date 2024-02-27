@@ -6,15 +6,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectChannel } from '../redux/reducers/channelsSlice';
 import scrollToBottom from '../utils/scrollToBottom';
 import getModal from './modal/getModal';
+import { showModal, hideModal } from '../redux/reducers/modalSlice';
 import '../index.css';
 
 const renderChannelButton = ({ item, showModal }, t, selectedChannelId, handleChannelSelect) => {
-  const isDefaultChannel = item.name === 'general' || item.name === 'random';
   const variant = item.id === selectedChannelId ? 'secondary' : null;
-
   return (
     <li key={item.id} className="nav-item w-100">
-      {!isDefaultChannel ? (
+      {(item.removable) ? (
         <Dropdown as={ButtonGroup} className="d-flex">
           <Button
             className="w-100 rounded-0 text-start text-truncate"
@@ -72,6 +71,8 @@ const ChannelBox = () => {
   const dispatch = useDispatch();
   const channels = useSelector((state) => state.channels.channels);
   const selectedChannelId = useSelector((state) => state.channels.selectedChannelId);
+  // const modalInfo = useSelector((state) => state.modal);
+
   const addChannelBattonRef = useRef(null);
 
   const [modalInfo, setModalInfo] = useState({ type: null, item: null });

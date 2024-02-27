@@ -12,6 +12,7 @@ const ModalAdd = (props) => {
   const { token } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { modalInfo, onHide } = props;
+  // const modalInfo = useSelector((state) => state.modal);
 
   const handleDeleteChannel = async () => {
     setIsSubmitting(true);

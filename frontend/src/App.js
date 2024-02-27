@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import LoginPage from './pages/login/login';
 import 'react-toastify/dist/ReactToastify.css';
-import ChatPage from './pages/chat/chat';
+import ChatPage from './pages/chat/index';
 import { AuthProvider } from './auth/AuthContext';
 import Signup from './pages/signup/signup';
 import NotFoundPage from './pages/notFoundPage';

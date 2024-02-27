@@ -90,7 +90,7 @@ const AddChannel = (props) => {
               name="name"
               id="name"
             />
-            <label className="visually-hidden" htmlFor="name">{t('modals.channelName')}</label>
+            <label className="visually-hidden" htmlFor="name">{t('ru.chat.inputNameChannel')}</label>
             <Form.Control.Feedback type="invalid">
               {t(f.errors.name) || t(f.status)}
             </Form.Control.Feedback>

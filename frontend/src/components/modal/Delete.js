@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';

@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
@@ -9,7 +8,7 @@ import {
 import { useFormik } from 'formik';
 import leoProfanity from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
-import {  useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../auth/AuthContext';
 import routes from '../../api/routes';
@@ -22,7 +21,6 @@ const RenameChannel = (props) => {
   const channels = useSelector((state) => state.channels.channels);
   const channelNames = channels.map(({ name }) => name);
 
-
   const inputRef = useRef(null);
   useEffect(() => {
     inputRef.current.focus();
@@ -31,14 +29,14 @@ const RenameChannel = (props) => {
 
   const f = useFormik({
     initialValues: {
-      name:  modalInfo.item.name,
+      name: modalInfo.item.name,
     },
     validationSchema: modalSchema(t, channels),
-    onSubmit: async ({ name }, { setSubmitting , setErrors, setFieldValue}) => {
+    onSubmit: async ({ name }, { setSubmitting, setErrors, setFieldValue }) => {
       const filteredName = leoProfanity.clean(name);
       const requestData = { name: filteredName, user: username };
       try {
-        modalSchema(t,channelNames).validateSync({ name: filteredName });
+        modalSchema(t, channelNames).validateSync({ name: filteredName });
       } catch (validationError) {
         setFieldValue('name', filteredName);
         setErrors({ name: validationError.message });
@@ -47,14 +45,14 @@ const RenameChannel = (props) => {
       }
       try {
         await axios.patch(`${routes.channelPath()}/${modalInfo.item.id}`, requestData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          toast.success(t('ru.notify.notifyChangeChannel'));
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success(t('ru.notify.notifyChangeChannel'));
         onHide();
       } catch (error) {
-        console.log(error)
+        console.log(error);
         if (!error.isAxiosError) {
           toast.error(t('ru.notify.unknown'));
         } else {
@@ -112,7 +110,7 @@ const RenameChannel = (props) => {
                 type="submit"
                 disabled={f.isSubmitting}
               >
-                 {t('ru.chat.addBtn')}
+                {t('ru.chat.addBtn')}
               </Button>
             </div>
           </Form.Group>

@@ -33,7 +33,7 @@ const AddChannel = (props) => {
       name: '',
     },
     validationSchema: modalSchema(t, channelNames),
-    onSubmit: async ({ name }, { setSubmitting , setErrors, setFieldValue}) => {
+    onSubmit: async ({ name }, { setSubmitting, setErrors, setFieldValue }) => {
       setSubmitting(true);
       const filteredName = leoProfanity.clean(name);
       const channel = { name: filteredName };

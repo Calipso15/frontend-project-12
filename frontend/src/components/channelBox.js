@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PlusSquare } from 'react-bootstrap-icons';
@@ -85,7 +83,6 @@ const ChannelBox = () => {
       addChannelBattonRef.current.focus();
     }
   }, [modalInfo]);
-  
 
   useEffect(() => {
     scrollToBottom();
@@ -110,7 +107,12 @@ const ChannelBox = () => {
         </button>
       </div>
       <ul id="channels-box" className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
-        {channels.map((channel) => renderChannelButton({ item: channel, showModal }, t, selectedChannelId, handleChannelSelect))}
+        {channels.map((channel) => renderChannelButton(
+          { item: channel, showModal },
+          t,
+          selectedChannelId,
+          handleChannelSelect,
+        ))}
         {renderModal({ modalInfo, hideModal })}
       </ul>
     </>

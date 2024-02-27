@@ -34,7 +34,7 @@ body .invalid-tooltip {
   padding-left: 0.5rem!important;
 }
 
-.dropdown-menu {
+/* .dropdown-menu {
   background-clip: padding-box;
   background-color: #fff;
   border: 1px solid rgba(0,0,0,.15);
@@ -49,9 +49,9 @@ body .invalid-tooltip {
   position: absolute;
   text-align: left;
   z-index: 1000;
-}
+} */
 
-.dropdown-item:focus,.dropdown-item:hover {
+/* .dropdown-item:focus,.dropdown-item:hover {
   background-color: #e9ecef;
   color: #1e2125
 }
@@ -66,13 +66,13 @@ body .invalid-tooltip {
 .w-100.rounded-0.text-start.btn.btn-secondary:focus {
   box-shadow: 0 0 0 0.25rem hsla(208,6%,54%,.5)
 
-}
+} */
 
 .is-ivalid {
   border-color:#dc3545
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
   background-color:#000
 }
 
@@ -141,6 +141,26 @@ input.form-control {
   background-color: #0d6efd;
 } 
 
+.w-100.rounded-0.text-start,
+.dropdown-toggle-split {
+  background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;;
+  color: #212529;
+  border-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;;
+}
+
+
+
+
+*/
+
+/* .custom-dropdown .btn,
+.w-100.rounded-0.text-start {
+  background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;;
+  color: #212529;
+  border-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;;
+} */
+
+/* Пример переопределения стилей для Dropdown.Toggle */
 
 
 

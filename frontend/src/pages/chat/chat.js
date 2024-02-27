@@ -11,7 +11,6 @@ import { setMessage } from '../../redux/reducers/messagesSlice';
 import {
   setChannels, selectChannel,
 } from '../../redux/reducers/channelsSlice';
-import ModalAdd from '../../components/modal';
 import { useAuth } from '../../auth/AuthContext';
 import Navbar from '../../components/navBar';
 import ChannelBox from '../../components/channelBox';
@@ -24,13 +23,6 @@ const ChatPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate('/login');
-  //   }
-  //   return undefined;
-  // }, [token, navigate]);
 
   useEffect(() => {
     if (!token) {
@@ -84,7 +76,6 @@ const ChatPage = () => {
               </div>
             </div>
           </div>
-          <ModalAdd />
         </div>
       </div>
     </div>

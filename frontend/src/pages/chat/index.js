@@ -16,6 +16,7 @@ import Navbar from '../../components/navBar';
 import ChannelBox from '../../components/channelBox';
 import MessageBox from '../../components/messageBox';
 import routes from '../../api/routes';
+import ChatModal from '../../components/modal/getModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ChatPage = () => {
@@ -62,11 +63,14 @@ const ChatPage = () => {
   }
 
   return (
+
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
+
           <Navbar showButton />
           <div className="container h-100 my-4 overflow-hidden rounded shadow">
+            <ChatModal />
             <div className="row h-100 bg-white flex-md-row">
               <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
                 <ChannelBox />
@@ -74,6 +78,7 @@ const ChatPage = () => {
               <div className="col p-0 h-100">
                 <MessageBox />
               </div>
+
             </div>
           </div>
         </div>

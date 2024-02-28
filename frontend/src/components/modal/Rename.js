@@ -13,13 +13,16 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../../auth/AuthContext';
 import routes from '../../api/routes';
 import modalSchema from '../../schemas/modalSchema';
+import { getChannelNameById } from '../../utils/searchId';
 
-const RenameChannel = (props) => {
+const RenameChannel = ({ onHide }) => {
   const { t } = useTranslation();
   const { token, username } = useAuth();
-  const { modalInfo, onHide } = props;
+  const { channelId } = useSelector((state) => state.modal);
+
   const channels = useSelector((state) => state.channels.channels);
   const channelNames = channels.map(({ name }) => name);
+  const initialValName = getChannelNameById(channels, channelId);
 
   const inputRef = useRef(null);
   useEffect(() => {
@@ -29,7 +32,7 @@ const RenameChannel = (props) => {
 
   const f = useFormik({
     initialValues: {
-      name: modalInfo.item.name,
+      name: initialValName,
     },
     validationSchema: modalSchema(t, channels),
     onSubmit: async ({ name }, { setSubmitting, setErrors, setFieldValue }) => {
@@ -44,7 +47,7 @@ const RenameChannel = (props) => {
         return;
       }
       try {
-        await axios.patch(`${routes.channelPath()}/${modalInfo.item.id}`, requestData, {
+        await axios.patch(`${routes.channelPath()}/${channelId}`, requestData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,7 +70,7 @@ const RenameChannel = (props) => {
   });
 
   return (
-    <Modal show>
+    <>
       <Modal.Header>
         <Modal.Title>{t('ru.chat.renameChannelModalHeading')}</Modal.Title>
         <Button
@@ -116,7 +119,7 @@ const RenameChannel = (props) => {
           </Form.Group>
         </Form>
       </Modal.Body>
-    </Modal>
+    </>
   );
 };
 

@@ -11,6 +11,7 @@ import Navbar from '../../components/navBar';
 import avatar from './avatar_signup.jpg';
 import handleSuccess from '../../utils/handleSuccess';
 import routes from '../../api/routes';
+import Spinner from '../../components/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../index.css';
 
@@ -66,73 +67,79 @@ const Signup = () => {
               <div className="col-12 col-md-8 col-xxl-6">
                 <div className="card shadow-sm">
                   <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
-                    <div>
-                      <img src={avatar} className="rounded-circle" alt="Регистрация" />
-                    </div>
-                    <form
-                      className="w-50"
-                      onSubmit={formik.handleSubmit}
-                    >
-                      <h1 className="text-center mb-4">{t('ru.registration.header')}</h1>
-                      <div className="form-floating mb-3">
-                        <input
-                          placeholder=""
-                          name="username"
-                          autoComplete="username"
-                          required=""
-                          id="username"
-                          ref={inputNameRef}
-                          className={`form-control ${(formik.touched.username && formik.errors.username) || errorMessage ? 'is-invalid' : ''}`}
-                          value={formik.values.username}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        <label className="form-label" htmlFor="username">{t('ru.registration.name')}</label>
-                        <div className="invalid-tooltip">{formik.errors.username}</div>
-                      </div>
-                      <div className="form-floating mb-3">
-                        <input
-                          placeholder=""
-                          name="password"
-                          aria-describedby="passwordHelpBlock"
-                          required=""
-                          autoComplete="new-password"
-                          type="password"
-                          id="password"
-                          className={`form-control ${(formik.touched.password && formik.errors.password) || errorMessage ? 'is-invalid' : ''}`}
-                          value={formik.values.password}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        <div className="invalid-tooltip">{formik.errors.password}</div>
-                        <label className="form-label" htmlFor="password">{t('ru.authorization.password')}</label>
-                      </div>
-                      <div className="form-floating mb-4">
-                        <input
-                          placeholder=""
-                          name="confirmPassword"
-                          required=""
-                          autoComplete="new-password"
-                          type="password"
-                          id="confirmPassword"
-                          className={`form-control ${(formik.touched.confirmPassword && formik.errors.confirmPassword) || errorMessage ? 'is-invalid' : ''}`}
-                          value={formik.values.confirmPassword}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        {formik.touched.password && formik.errors.confirmPassword && (
-                        <div className="invalid-tooltip">{formik.errors.confirmPassword}</div>
-                        )}
-                        {errorMessage && (
-                        <div className="invalid-tooltip" style={{ display: 'block' }}>{errorMessage}</div>
-                        )}
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <div>
+                          <img src={avatar} className="rounded-circle" alt="Регистрация" />
+                        </div>
+                        <form
+                          className="w-50"
+                          onSubmit={formik.handleSubmit}
+                        >
+                          <h1 className="text-center mb-4">{t('ru.registration.header')}</h1>
+                          <div className="form-floating mb-3">
+                            <input
+                              placeholder=""
+                              name="username"
+                              autoComplete="username"
+                              required=""
+                              id="username"
+                              ref={inputNameRef}
+                              className={`form-control ${(formik.touched.username && formik.errors.username) || errorMessage ? 'is-invalid' : ''}`}
+                              value={formik.values.username}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                            />
+                            <label className="form-label" htmlFor="username">{t('ru.registration.name')}</label>
+                            <div className="invalid-tooltip">{formik.errors.username}</div>
+                          </div>
+                          <div className="form-floating mb-3">
+                            <input
+                              placeholder=""
+                              name="password"
+                              aria-describedby="passwordHelpBlock"
+                              required=""
+                              autoComplete="new-password"
+                              type="password"
+                              id="password"
+                              className={`form-control ${(formik.touched.password && formik.errors.password) || errorMessage ? 'is-invalid' : ''}`}
+                              value={formik.values.password}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                            />
+                            <div className="invalid-tooltip">{formik.errors.password}</div>
+                            <label className="form-label" htmlFor="password">{t('ru.authorization.password')}</label>
+                          </div>
+                          <div className="form-floating mb-4">
+                            <input
+                              placeholder=""
+                              name="confirmPassword"
+                              required=""
+                              autoComplete="new-password"
+                              type="password"
+                              id="confirmPassword"
+                              className={`form-control ${(formik.touched.confirmPassword && formik.errors.confirmPassword) || errorMessage ? 'is-invalid' : ''}`}
+                              value={formik.values.confirmPassword}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                            />
+                            {formik.touched.password && formik.errors.confirmPassword && (
+                            <div className="invalid-tooltip">{formik.errors.confirmPassword}</div>
+                            )}
+                            {errorMessage && (
+                            <div className="invalid-tooltip" style={{ display: 'block' }}>{errorMessage}</div>
+                            )}
 
-                        <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
-                      </div>
-                      <button type="submit" className="w-100 btn btn-outline-primary" disabled={loading}>
-                        {loading ? <div className="spinner-border" role="status" /> : t('ru.registration.signUpBtn')}
-                      </button>
-                    </form>
+                            <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
+                          </div>
+                          <button type="submit" className="w-100 btn btn-outline-primary" disabled={loading}>
+                            {t('ru.registration.signUpBtn')}
+                          </button>
+                        </form>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

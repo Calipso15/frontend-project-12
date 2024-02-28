@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
@@ -7,22 +8,21 @@ import { useAuth } from '../../auth/AuthContext';
 import routes from '../../api/routes';
 import '../../index.css';
 
-const ModalAdd = (props) => {
+const ModalAdd = ({ onHide }) => {
   const { t } = useTranslation();
   const { token } = useAuth();
+  const { channelId } = useSelector((state) => state.modal);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { modalInfo, onHide } = props;
-  // const modalInfo = useSelector((state) => state.modal);
 
   const handleDeleteChannel = async () => {
     setIsSubmitting(true);
     try {
-      await axios.delete(`${routes.messagesPath()}/${modalInfo.item.id}`, {
+      await axios.delete(`${routes.messagesPath()}/${channelId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      await axios.delete(`${routes.channelPath()}/${modalInfo.item.id}`, {
+      await axios.delete(`${routes.channelPath()}/${channelId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -41,8 +41,8 @@ const ModalAdd = (props) => {
   };
 
   return (
-    <Modal show>
-      <Modal.Header closeButton onHide={onHide}>
+    <>
+      <Modal.Header closeButton>
         <Modal.Title>{t('ru.chat.deleteChannelModalHeading')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -52,7 +52,7 @@ const ModalAdd = (props) => {
         <Button variant="secondary" onClick={onHide}>{t('ru.chat.cancelBtn')}</Button>
         <Button variant="danger" onClick={handleDeleteChannel} disabled={isSubmitting}>{t('ru.chat.deleteChannelBtn')}</Button>
       </Modal.Footer>
-    </Modal>
+    </>
   );
 };
 

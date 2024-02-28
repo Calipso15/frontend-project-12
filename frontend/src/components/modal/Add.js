@@ -9,21 +9,21 @@ import {
 import { useFormik } from 'formik';
 import leoProfanity from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../auth/AuthContext';
 import { selectChannel } from '../../redux/reducers/channelsSlice';
 import routes from '../../api/routes';
 import modalSchema from '../../schemas/modalSchema';
 
-const AddChannel = (props) => {
+const AddChannel = ({ onHide }) => {
   const { t } = useTranslation();
   const { token } = useAuth();
   const dispatch = useDispatch();
-  const { modalInfo, onHide } = props;
-
-  const channelNames = modalInfo.item.map(({ name }) => name);
+  const channels = useSelector((state) => state.channels.channels);
+  const channelNames = channels.map(({ name }) => name);
   const inputRef = useRef(null);
+
   useEffect(() => {
     inputRef.current.focus();
   });
@@ -70,7 +70,7 @@ const AddChannel = (props) => {
   });
 
   return (
-    <Modal show>
+    <>
       <Modal.Header closeButton onHide={onHide}>
         <Modal.Title>
           {t('ru.chat.addChannelModalHeading')}
@@ -114,7 +114,7 @@ const AddChannel = (props) => {
           </Form.Group>
         </Form>
       </Modal.Body>
-    </Modal>
+    </>
   );
 };
 

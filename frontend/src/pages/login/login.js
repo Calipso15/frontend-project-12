@@ -60,6 +60,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-100">
+      {loading && <Spinner />}
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
           <Navbar showButton={false} />
@@ -71,50 +72,46 @@ const LoginPage = () => {
                     <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
                       <img src={hexletLogo} className="rounded-circle" alt="Войти" />
                     </div>
-                    {loading ? (
-                      <Spinner />
-                    ) : (
-                      <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
-                        <h1 className="text-center mb-4">{t('ru.authorization.signInBtn')}</h1>
-                        <div className="form-floating mb-3">
-                          <input
-                            name="username"
-                            autoComplete="username"
-                            required=""
-                            placeholder={t('ru.authorization.login')}
-                            id="username"
-                            className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
-                            onChange={formik.handleChange}
-                            value={formik.values.username}
-                            ref={usernameInputRef}
-                          />
-                          <label htmlFor="username">{t('ru.authorization.login')}</label>
+                    <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
+                      <h1 className="text-center mb-4">{t('ru.authorization.signInBtn')}</h1>
+                      <div className="form-floating mb-3">
+                        <input
+                          name="username"
+                          autoComplete="username"
+                          required=""
+                          placeholder={t('ru.authorization.login')}
+                          id="username"
+                          className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
+                          onChange={formik.handleChange}
+                          value={formik.values.username}
+                          ref={usernameInputRef}
+                        />
+                        <label htmlFor="username">{t('ru.authorization.login')}</label>
 
-                        </div>
-                        <div className="form-floating mb-4">
-                          <input
-                            name="password"
-                            autoComplete="current-password"
-                            required=""
-                            placeholder={t('ru.authorization.password')}
-                            type="password"
-                            id="password"
-                            className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
-                            onChange={formik.handleChange}
-                            value={formik.values.password}
-                          />
-                          <label className="form-label" htmlFor="password">{t('ru.authorization.password')}</label>
-                          {errorMessage && (
+                      </div>
+                      <div className="form-floating mb-4">
+                        <input
+                          name="password"
+                          autoComplete="current-password"
+                          required=""
+                          placeholder={t('ru.authorization.password')}
+                          type="password"
+                          id="password"
+                          className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
+                          onChange={formik.handleChange}
+                          value={formik.values.password}
+                        />
+                        <label className="form-label" htmlFor="password">{t('ru.authorization.password')}</label>
+                        {errorMessage && (
                           <div className="invalid-tooltip d-block">
                             {errorMessage}
                           </div>
-                          )}
-                        </div>
-                        <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={loading}>
-                          {t('ru.authorization.signInBtn')}
-                        </button>
-                      </form>
-                    )}
+                        )}
+                      </div>
+                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={loading}>
+                        {t('ru.authorization.signInBtn')}
+                      </button>
+                    </form>
                   </div>
                   <div className="card-footer p-4">
                     <div className="text-center">

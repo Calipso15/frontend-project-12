@@ -51,7 +51,7 @@ const MessageBox = () => {
       toast.error(t('ru.notify.notifyErrorErrorNetwork'));
     }
   };
-  console.log(messages);
+
   const renderMessages = () => {
     const filteredMessages = messages.filter((message) => message.channelId === selectedChannelId);
     return filteredMessages.map((message) => (

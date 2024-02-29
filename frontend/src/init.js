@@ -52,15 +52,15 @@ const init = async (socket) => {
   };
 
   const vdom = (
-      <StoreProvider store={store}>
-        <Provider config={rollbarConfig}>
-          <ErrorBoundary>
-            <I18nextProvider i18n={i18n}>
-              <App />
-            </I18nextProvider>
-          </ErrorBoundary>
-        </Provider>
-      </StoreProvider>
+    <StoreProvider store={store}>
+      <Provider config={rollbarConfig}>
+        <ErrorBoundary>
+          <I18nextProvider i18n={i18n}>
+            <App />
+          </I18nextProvider>
+        </ErrorBoundary>
+      </Provider>
+    </StoreProvider>
   );
   return vdom;
 };

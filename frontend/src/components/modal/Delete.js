@@ -22,11 +22,6 @@ const ModalAdd = ({ onHide }) => {
   const handleDeleteChannel = async () => {
     setIsSubmitting(true);
     try {
-      await axios.delete(`${routes.messagesPath()}/${channelId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
       await axios.delete(`${routes.channelPath()}/${channelId}`, {
         headers: {
           Authorization: `Bearer ${token}`,

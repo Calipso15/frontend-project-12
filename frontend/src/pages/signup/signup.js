@@ -63,7 +63,6 @@ const Signup = () => {
               <div className="col-12 col-md-8 col-xxl-6">
                 <div className="card shadow-sm">
                   <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
-
                     <div>
                       <img src={avatar} className="rounded-circle" alt="Регистрация" />
                     </div>
@@ -124,7 +123,6 @@ const Signup = () => {
                         {errorMessage && (
                         <div className="invalid-tooltip" style={{ display: 'block' }}>{errorMessage}</div>
                         )}
-
                         <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
                       </div>
                       <button type="submit" className="w-100 btn btn-outline-primary">

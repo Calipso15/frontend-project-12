@@ -18,7 +18,6 @@ const MessageBox = () => {
   const messages = useSelector((state) => state.messages.messages);
   const selectedChannelId = useSelector((state) => state.channels.selectedChannelId);
   const [formData, setFormdata] = useState({ message: '' });
-
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -52,7 +51,7 @@ const MessageBox = () => {
       toast.error(t('ru.notify.notifyErrorErrorNetwork'));
     }
   };
-
+  console.log(messages);
   const renderMessages = () => {
     const filteredMessages = messages.filter((message) => message.channelId === selectedChannelId);
     return filteredMessages.map((message) => (

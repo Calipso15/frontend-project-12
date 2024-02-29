@@ -23,7 +23,6 @@ const AddChannel = ({ onHide }) => {
   const channels = useSelector((state) => state.channels.channels);
   const channelNames = channels.map(({ name }) => name);
   const inputRef = useRef(null);
-  console.log(channels);
 
   useEffect(() => {
     inputRef.current.focus();

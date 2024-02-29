@@ -11,7 +11,6 @@ import Navbar from '../../components/navBar';
 import avatar from './avatar_signup.jpg';
 import handleSuccess from '../../utils/handleSuccess';
 import routes from '../../api/routes';
-import Spinner from '../../components/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../index.css';
 
@@ -21,7 +20,6 @@ const Signup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const inputNameRef = useRef(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     inputNameRef.current.focus();
@@ -36,7 +34,6 @@ const Signup = () => {
     validationSchema: signupSchema(t),
     onSubmit: async (values) => {
       try {
-        setLoading(true);
         const response = await axios.post(routes.signupPath(), values);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
@@ -51,8 +48,6 @@ const Signup = () => {
         } else {
           toast.error(t('ru.notify.notifyErrorErrorNetwork'));
         }
-      } finally {
-        setLoading(false);
       }
     },
   });
@@ -60,7 +55,6 @@ const Signup = () => {
   return (
 
     <div className="h-100">
-      {loading && <Spinner />}
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
           <Navbar showButton={false} />
@@ -133,7 +127,7 @@ const Signup = () => {
 
                         <label className="form-label" htmlFor="confirmPassword">{t('ru.registration.confirmPassword')}</label>
                       </div>
-                      <button type="submit" className="w-100 btn btn-outline-primary" disabled={loading}>
+                      <button type="submit" className="w-100 btn btn-outline-primary">
                         {t('ru.registration.signUpBtn')}
                       </button>
                     </form>

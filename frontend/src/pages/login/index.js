@@ -12,7 +12,6 @@ import Navbar from '../../components/navBar';
 import handleSuccess from '../../utils/handleSuccess';
 import routes from '../../api/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Spinner from '../../components/Spinner';
 import '../../index.css';
 
 const LoginPage = () => {
@@ -21,7 +20,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const usernameInputRef = useRef(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     usernameInputRef.current.focus();
@@ -34,7 +32,6 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        setLoading(true);
         const response = await axios.post(routes.loginPath(), values);
         handleSuccess(response.data, login, navigate);
       } catch (error) {
@@ -52,15 +49,12 @@ const LoginPage = () => {
         } else {
           toast.error(t('ru.notify.notifyErrorErrorNetwork'));
         }
-      } finally {
-        setLoading(false);
       }
     },
   });
 
   return (
     <div className="h-100">
-      {loading && <Spinner />}
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
           <Navbar showButton={false} />
@@ -108,7 +102,7 @@ const LoginPage = () => {
                           </div>
                         )}
                       </div>
-                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={loading}>
+                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary">
                         {t('ru.authorization.signInBtn')}
                       </button>
                     </form>

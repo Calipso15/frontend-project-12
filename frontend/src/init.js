@@ -3,8 +3,11 @@ import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { Provider as StoreProvider } from 'react-redux';
 import { Provider, ErrorBoundary } from '@rollbar/react';
+import { getGeneralChannelId } from './utils/searchId';
 import { addMessage } from './redux/reducers/messagesSlice';
-import { addChannel, deleteChannel, renameChannel } from './redux/reducers/channelsSlice';
+import {
+  addChannel, deleteChannel, renameChannel, selectChannel,
+} from './redux/reducers/channelsSlice';
 import ru from './locales/ru';
 import store from './redux/store';
 import App from './App';
@@ -37,6 +40,12 @@ const init = async (socket) => {
   socket.on('removeChannel', (data) => {
     const { id: channelId } = data;
     store.dispatch(deleteChannel(channelId));
+    const state = store.getState();
+    const { selectedChannelId } = state.channels;
+    if (selectedChannelId === channelId) {
+      const idDefaultChannel = getGeneralChannelId(state.channels.channels);
+      store.dispatch(selectChannel(idDefaultChannel));
+    }
   });
 
   socket.on('renameChannel', (data) => {

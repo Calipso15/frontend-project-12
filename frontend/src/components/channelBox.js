@@ -54,7 +54,6 @@ const renderChannelButton = (
           variant={variant}
           className="w-100 rounded-0 text-start"
           onClick={() => handleChannelSelect(id)}
-
         >
           <span className="me-1">#</span>
           {name}
@@ -70,13 +69,14 @@ const ChannelBox = () => {
   const channels = useSelector((state) => state.channels.channels);
   const selectedChannelId = useSelector((state) => state.channels.selectedChannelId);
   const addChannelBattonRef = useRef(null);
+
   const showModal = (type, id) => () => {
     dispatch(openModal({ type, id }));
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [selectedChannelId]);
+  }, []);
 
   const handleChannelSelect = (channelId) => {
     dispatch(selectChannel(channelId));

@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
 import { useAuth } from '../../auth/AuthContext';
 import routes from '../../api/routes';
-import { getGeneralChannelId } from '../../utils/searchId';
-import { selectChannel } from '../../redux/reducers/channelsSlice';
 import '../../index.css';
 
 const ModalAdd = ({ onHide }) => {
   const { t } = useTranslation();
   const { token } = useAuth();
-  const dispatch = useDispatch();
-  const channels = useSelector((state) => state.channels.channels);
   const { channelId } = useSelector((state) => state.modal);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const idDefaultChannel = getGeneralChannelId(channels);
 
   const handleDeleteChannel = async () => {
     setIsSubmitting(true);
@@ -29,7 +24,6 @@ const ModalAdd = ({ onHide }) => {
       });
 
       toast.success(t('ru.notify.notifyDeletChannel'));
-      dispatch(selectChannel(idDefaultChannel));
       onHide();
     } catch (error) {
       if (!error.isAxiosError) {
